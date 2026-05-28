@@ -1,0 +1,1671 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Creed — Live by your creed.</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#fff;--surface:#f5f5f5;--surface2:#ebebeb;--border:#e8e8e8;--text:#0a0a0a;--muted:#999;--radius:20px;--rsm:14px}
+body{background:#e8e8e8;display:flex;justify-content:center;padding:24px 16px;font-family:'Inter',sans-serif;min-height:100vh}
+.phone{width:390px;background:var(--bg);border-radius:52px;overflow:hidden;position:relative;height:844px;display:flex;flex-direction:column;box-shadow:0 32px 80px rgba(0,0,0,0.15),0 0 0 1px rgba(0,0,0,0.06)}
+.screen{display:none;flex-direction:column;height:100%}
+.screen.active{display:flex}
+.scroll{flex:1;overflow-y:auto;padding-bottom:90px}
+.scroll::-webkit-scrollbar{display:none}
+/* status + topbar */
+.status{padding:54px 24px 0;display:flex;justify-content:space-between;flex-shrink:0}
+.stime{font-size:15px;font-weight:600;color:var(--text)}
+.sicons{font-size:12px;color:var(--muted)}
+.topbar{padding:10px 20px 6px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.wordmark{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:var(--text)}
+.upbtn{background:var(--text);color:#fff;border:none;border-radius:20px;padding:6px 14px;font-size:12px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif}
+/* bottom nav */
+.bnav{position:absolute;bottom:0;left:0;right:0;background:rgba(255,255,255,0.96);border-top:0.5px solid var(--border);padding:10px 0 28px;display:flex;z-index:100;backdrop-filter:blur(20px)}
+.nbtn{flex:1;background:none;border:none;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;font-size:10px;color:var(--muted);font-family:'Inter',sans-serif;font-weight:500}
+.nbtn.on{color:var(--text)}
+.nbtn svg{width:22px;height:22px;stroke-width:1.5}
+/* home grid */
+.cat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:10px 20px 16px}
+.ctile{background:var(--surface);border:0.5px solid var(--border);border-radius:var(--radius);padding:20px 16px;cursor:pointer;transition:transform .12s,background .12s}
+.ctile:active{transform:scale(.97)}
+.ctile-emoji{font-size:30px;display:block;margin-bottom:10px}
+.ctile-name{font-size:15px;font-weight:600;color:var(--text)}
+.ctile-sub{font-size:11px;color:var(--muted);margin-top:3px;line-height:1.4}
+/* section label */
+.slbl{padding:14px 20px 8px;font-size:11px;font-weight:600;color:var(--muted);letter-spacing:.08em;text-transform:uppercase}
+/* back btn */
+.bbtn{background:none;border:none;cursor:pointer;color:var(--muted);display:flex;align-items:center;gap:4px;font-size:14px;font-family:'Inter',sans-serif;font-weight:500;padding:8px 20px 4px}
+.bbtn svg{width:16px;height:16px;stroke:currentColor;stroke-width:2;fill:none}
+/* category header */
+.chdr{padding:4px 20px 14px}
+.chdr-emoji{font-size:38px;margin-bottom:8px}
+.chdr-title{font-family:'Playfair Display',serif;font-size:30px;color:var(--text)}
+.chdr-sub{font-size:13px;color:var(--muted);margin-top:4px}
+/* sub items */
+.sitem{margin:0 20px 8px;background:var(--surface);border:0.5px solid var(--border);border-radius:var(--rsm);padding:14px 16px;display:flex;align-items:center;gap:12px;cursor:pointer;transition:background .12s}
+.sitem:active{background:var(--surface2)}
+.sico{width:42px;height:42px;border-radius:10px;background:var(--bg);border:0.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.sname{font-size:14px;font-weight:600;color:var(--text)}
+.sdesc{font-size:11px;color:var(--muted);margin-top:2px;line-height:1.4}
+.sarrow{margin-left:auto;color:var(--muted);font-size:18px}
+/* buttons */
+.bdark{display:block;width:calc(100% - 40px);margin:8px 20px;background:var(--text);color:#fff;border:none;border-radius:var(--radius);padding:15px;font-size:15px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;text-align:center}
+.blight{display:block;width:calc(100% - 40px);margin:4px 20px;background:var(--surface);color:var(--text);border:0.5px solid var(--border);border-radius:var(--radius);padding:14px;font-size:14px;font-weight:500;cursor:pointer;font-family:'Inter',sans-serif;text-align:center}
+/* cards */
+.card{margin:0 20px 10px;background:var(--surface);border:0.5px solid var(--border);border-radius:var(--radius);padding:18px}
+.card.hot{border:1.5px solid var(--text)}
+/* progress */
+.pbar{height:3px;background:var(--surface2);border-radius:2px;margin-top:8px}
+.pfill{height:3px;background:var(--text);border-radius:2px}
+/* lesson card */
+.lesson{margin:0 20px 10px;background:var(--surface);border:0.5px solid var(--border);border-radius:var(--radius);overflow:hidden;cursor:pointer}
+.lesson-tag{background:var(--text);color:#fff;font-size:10px;font-weight:700;padding:4px 12px;letter-spacing:.06em;text-transform:uppercase;display:inline-block}
+.lesson-body{padding:14px 16px}
+.lesson-title{font-size:15px;font-weight:700;color:var(--text);line-height:1.3}
+.lesson-preview{font-size:12px;color:var(--muted);margin-top:6px;line-height:1.5}
+.lesson-meta{font-size:11px;color:var(--muted);margin-top:10px;display:flex;align-items:center;gap:12px}
+/* goal card */
+.goal-card{margin:0 20px 10px;background:var(--surface);border:0.5px solid var(--border);border-radius:var(--rsm);padding:16px}
+.goal-title{font-size:13px;font-weight:600;color:var(--text)}
+.goal-val{font-family:'Playfair Display',serif;font-size:28px;color:var(--text);margin:4px 0}
+.goal-sub{font-size:11px;color:var(--muted)}
+/* supplier card */
+.sup-card{margin:0 20px 10px;background:var(--surface);border:0.5px solid var(--border);border-radius:var(--rsm);padding:16px;display:flex;align-items:flex-start;gap:12px}
+.sup-ico{width:44px;height:44px;border-radius:10px;background:var(--text);display:flex;align-items:center;justify-content:center;color:#fff;font-size:18px;flex-shrink:0}
+.sup-name{font-size:14px;font-weight:600;color:var(--text)}
+.sup-products{font-size:11px;color:var(--muted);margin-top:3px;line-height:1.4}
+.sup-btn{margin-top:10px;background:var(--text);color:#fff;border:none;border-radius:20px;padding:6px 14px;font-size:12px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif}
+/* supplement row */
+.supp-item{margin:0 20px 8px;background:var(--surface);border:0.5px solid var(--border);border-radius:var(--rsm);padding:14px 16px;display:flex;align-items:center;gap:12px}
+.supp-ico{width:36px;height:36px;border-radius:10px;background:var(--bg);border:0.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.supp-name{font-size:13px;font-weight:600;color:var(--text)}
+.supp-desc{font-size:11px;color:var(--muted);margin-top:2px}
+.supp-time{margin-left:auto;font-size:11px;color:var(--text);font-weight:600;flex-shrink:0}
+/* routine step */
+.rstep{margin:0 20px 8px;background:var(--surface);border:0.5px solid var(--border);border-radius:var(--rsm);padding:14px 16px;display:flex;align-items:center;gap:12px}
+.rnum{width:28px;height:28px;border-radius:50%;background:var(--text);color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0}
+.rname{font-size:13px;font-weight:600;color:var(--text)}
+.rdesc{font-size:11px;color:var(--muted);margin-top:2px}
+/* scan box */
+.scan-box{margin:0 20px 14px;background:var(--surface);border:0.5px solid var(--border);border-radius:var(--radius);padding:20px;text-align:center;cursor:pointer}
+/* rank */
+.rank-card{margin:0 20px 12px;background:var(--text);border-radius:var(--radius);padding:20px;color:#fff}
+.rank-title{font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;opacity:.6;margin-bottom:4px}
+.rank-name{font-family:'Playfair Display',serif;font-size:32px}
+.rank-sub{font-size:12px;opacity:.6;margin-top:4px}
+/* chat */
+.chat-wrap{display:flex;flex-direction:column;height:100%}
+.chat-hdr{padding:54px 20px 14px;display:flex;align-items:center;gap:12px;flex-shrink:0;border-bottom:0.5px solid var(--border)}
+.chat-av{width:42px;height:42px;border-radius:50%;background:var(--text);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.chat-name{font-size:15px;font-weight:600;color:var(--text)}
+.chat-st{font-size:11px;color:var(--muted);margin-top:1px}
+.chat-msgs{flex:1;overflow-y:auto;padding:16px 20px;display:flex;flex-direction:column;gap:10px}
+.chat-msgs::-webkit-scrollbar{display:none}
+.msg{max-width:82%;padding:12px 14px;border-radius:18px;font-size:13px;line-height:1.55}
+.msg.bot{background:var(--surface);color:var(--text);align-self:flex-start;border-bottom-left-radius:4px;border:0.5px solid var(--border)}
+.msg.user{background:var(--text);color:#fff;align-self:flex-end;border-bottom-right-radius:4px}
+.chat-inp-row{padding:12px 20px 100px;display:flex;gap:8px;flex-shrink:0;border-top:0.5px solid var(--border)}
+.cinp{flex:1;background:var(--surface);border:0.5px solid var(--border);border-radius:24px;padding:11px 16px;color:var(--text);font-size:13px;font-family:'Inter',sans-serif;outline:none}
+.csend{width:40px;height:40px;background:var(--text);border:none;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0}
+.csend svg{width:16px;height:16px;stroke:#fff;stroke-width:2;fill:none}
+/* tiktok */
+.tiktok-wrap{flex:1;overflow:hidden;position:relative}
+.tkfeed{height:100%;overflow-y:scroll;scroll-snap-type:y mandatory}
+.tkfeed::-webkit-scrollbar{display:none}
+.tkpost{scroll-snap-align:start;height:calc(844px - 90px);position:relative;display:flex;flex-direction:column;justify-content:flex-end;flex-shrink:0;overflow:hidden}
+.tkbg{position:absolute;inset:0}
+.tkgrad{position:absolute;inset:0;background:linear-gradient(transparent 30%,rgba(0,0,0,0.8))}
+.tkcontent{position:relative;z-index:2;padding:20px}
+.tkuser{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.tkav{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0;border:1.5px solid rgba(255,255,255,0.4)}
+.tkun{font-size:14px;font-weight:700;color:#fff}
+.tksc{font-size:11px;color:rgba(255,255,255,.6);margin-top:1px}
+.tkcap{font-size:13px;color:rgba(255,255,255,.92);line-height:1.55;margin-bottom:10px}
+.tktags{display:flex;flex-wrap:wrap;gap:6px}
+.ttag{font-size:11px;padding:3px 10px;border-radius:20px;background:rgba(255,255,255,.1);color:rgba(255,255,255,.85);border:0.5px solid rgba(255,255,255,.2)}
+.ttag.win{background:rgba(0,0,0,.3);color:#fff;font-weight:600}
+.tkside{position:absolute;right:16px;bottom:100px;z-index:3;display:flex;flex-direction:column;align-items:center;gap:20px}
+.tkact{display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer}
+.tkico{width:42px;height:42px;background:rgba(255,255,255,.15);border-radius:50%;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(8px)}
+.tkico svg{width:18px;height:18px;stroke:#fff;stroke-width:1.5;fill:none}
+.tkct{font-size:11px;color:#fff;font-weight:600}
+.social-hdr{position:absolute;top:0;left:0;right:0;z-index:10;padding:54px 20px 12px;display:flex;justify-content:space-between;align-items:center;background:linear-gradient(rgba(0,0,0,.4),transparent)}
+.stabs{display:flex;gap:18px}
+.stab{font-size:15px;font-weight:600;color:rgba(255,255,255,.5);cursor:pointer;background:none;border:none;font-family:'Inter',sans-serif;padding-bottom:2px}
+.stab.on{color:#fff;border-bottom:2px solid #fff}
+.timer{background:rgba(0,0,0,.3);border-radius:20px;padding:4px 12px;font-size:11px;color:#fff;font-weight:600;backdrop-filter:blur(8px)}
+/* profile */
+.phdr{padding:54px 20px 14px;display:flex;align-items:center;gap:14px;flex-shrink:0}
+.pav{width:64px;height:64px;border-radius:50%;background:var(--text);display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:26px;color:#fff;flex-shrink:0}
+.pname{font-size:20px;font-weight:700;color:var(--text)}
+.phandle{font-size:13px;color:var(--muted);margin-top:2px}
+.pplan{font-size:11px;color:var(--text);font-weight:600;margin-top:4px}
+.stats-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;padding:0 20px 14px}
+.sbox{background:var(--surface);border:0.5px solid var(--border);border-radius:var(--rsm);padding:14px;text-align:center}
+.sval{font-family:'Playfair Display',serif;font-size:26px;color:var(--text)}
+.slb{font-size:10px;color:var(--muted);margin-top:2px;text-transform:uppercase;letter-spacing:.06em}
+.score-item{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.scemoji{font-size:16px;width:22px;text-align:center}
+.scname{font-size:13px;font-weight:500;color:var(--text);width:78px}
+.scbar{flex:1;height:3px;background:var(--surface2);border-radius:2px}
+.scfill{height:3px;background:var(--text);border-radius:2px}
+.scval{font-size:13px;font-weight:700;color:var(--text);width:24px;text-align:right}
+.badge-row{display:flex;flex-wrap:wrap;gap:6px;padding:0 20px 14px}
+.badge{font-size:11px;padding:4px 12px;border-radius:20px;background:var(--surface);border:0.5px solid var(--border);color:var(--muted);font-weight:500}
+.badge.on{background:var(--text);color:#fff;border-color:var(--text)}
+/* plan */
+.pbadge{display:inline-block;background:var(--text);color:#fff;font-size:9px;font-weight:700;padding:3px 10px;border-radius:20px;margin-bottom:8px;letter-spacing:.06em;text-transform:uppercase}
+.pn{font-size:15px;font-weight:700;color:var(--text)}
+.pp{font-family:'Playfair Display',serif;font-size:36px;color:var(--text);margin:4px 0 0}
+.pper{font-size:13px;font-weight:400;font-family:'Inter',sans-serif;color:var(--muted)}
+.psave{font-size:12px;color:var(--text);font-weight:600;margin-bottom:8px}
+.pfeat{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:8px;margin-top:6px}
+.fc{color:var(--text);font-size:13px;font-weight:700}
+.fx{color:#ddd;font-size:13px}
+/* mission item */
+.mitem{margin:0 20px 8px;background:var(--surface);border:0.5px solid var(--border);border-radius:var(--rsm);padding:14px;display:flex;align-items:center;gap:12px}
+.mico{width:38px;height:38px;border-radius:10px;background:var(--bg);border:0.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.mtitle{font-size:13px;font-weight:600;color:var(--text)}
+.mmeta{font-size:11px;color:var(--muted);margin-top:2px}
+.mdone{opacity:.4}
+.mcheck{width:22px;height:22px;border-radius:50%;background:var(--text);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-left:auto}
+.mcheck svg{width:12px;height:12px;stroke:#fff;stroke-width:2.5;fill:none}
+</style>
+</head>
+<body>
+<div class="phone">
+
+<!-- HOME -->
+<div id="home" class="screen active">
+  <div class="scroll">
+    <div class="status"><span class="stime">9:41</span><span class="sicons">● ● ●</span></div>
+    <div class="topbar">
+      <div class="wordmark">Creed</div>
+      <button class="upbtn" onclick="go('pricing')">Upgrade →</button>
+    </div>
+    <div style="padding:4px 20px 10px;font-size:13px;color:var(--muted)">Choose your path</div>
+    <div class="cat-grid">
+      <div class="ctile" onclick="go('money')"><span class="ctile-emoji">💰</span><div class="ctile-name">Money</div><div class="ctile-sub">Make & build wealth</div></div>
+      <div class="ctile" onclick="go('body')"><span class="ctile-emoji">💪</span><div class="ctile-name">Body</div><div class="ctile-sub">Fit & physique</div></div>
+      <div class="ctile" onclick="go('image')"><span class="ctile-emoji">🪞</span><div class="ctile-name">Image</div><div class="ctile-sub">Glow up</div></div>
+      <div class="ctile" onclick="go('style')"><span class="ctile-emoji">👗</span><div class="ctile-name">Style</div><div class="ctile-sub">Fits & wardrobe</div></div>
+      <div class="ctile" onclick="go('mind')"><span class="ctile-emoji">🧠</span><div class="ctile-name">Mind</div><div class="ctile-sub">Mental performance</div></div>
+      <div class="ctile" onclick="go('confidence')"><span class="ctile-emoji">🔥</span><div class="ctile-name">Confidence</div><div class="ctile-sub">Social & dating</div></div>
+    </div>
+  </div>
+  <div class="bnav">
+    <button class="nbtn on" onclick="go('home')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Home</button>
+    <button class="nbtn" onclick="go('social')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Social</button>
+    <button class="nbtn" onclick="go('missions')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>Missions</button>
+    <button class="nbtn" onclick="go('profile')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Profile</button>
+  </div>
+</div>
+
+<!-- MONEY -->
+<div id="money" class="screen">
+  <div class="scroll">
+    <div class="status" style="padding-bottom:4px"><button class="bbtn" onclick="go('home')"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>Back</button></div>
+    <div class="chdr">
+      <div class="chdr-emoji">💰</div>
+      <div class="chdr-title">Money</div>
+      <div class="chdr-sub">Build real income. No shortcuts.</div>
+    </div>
+
+    <div class="rank-card">
+      <div class="rank-title">Your rank</div>
+      <div class="rank-name">Grinder</div>
+      <div class="rank-sub">Hit your first $1,000 to reach Elite</div>
+      <div class="pbar" style="background:rgba(255,255,255,.2);margin-top:10px"><div class="pfill" style="width:35%;background:#fff"></div></div>
+    </div>
+
+    <div class="slbl">Goal</div>
+    <div class="goal-card">
+      <div class="goal-title">Income goal</div>
+      <div class="goal-val">$1,000</div>
+      <div class="goal-sub">First milestone · 35% there</div>
+      <div class="pbar"><div class="pfill" style="width:35%"></div></div>
+    </div>
+
+    <div class="slbl">Choose your path</div>
+    <div class="sitem" onclick="go('reselling')"><div class="sico">👟</div><div><div class="sname">Reselling</div><div class="sdesc">Clothing, sneakers, electronics — suppliers included</div></div><span class="sarrow">›</span></div>
+    <div class="sitem" onclick="go('trading')"><div class="sico">📈</div><div><div class="sname">Trading</div><div class="sdesc">Stocks, forex, crypto — 55 day bootcamp</div></div><span class="sarrow">›</span></div>
+    <div class="sitem" onclick="go('crypto')"><div class="sico">🪙</div><div><div class="sname">Crypto</div><div class="sdesc">Investing, DeFi, wallets, how not to get wrecked</div></div><span class="sarrow">›</span></div>
+    <div class="sitem" onclick="go('digital')"><div class="sico">💻</div><div><div class="sname">Digital products</div><div class="sdesc">Templates, eBooks, courses, AI prompts</div></div><span class="sarrow">›</span></div>
+    <div class="sitem" onclick="go('agency')"><div class="sico">📣</div><div><div class="sname">Agency</div><div class="sdesc">SMMA, web design, paid ads — first client guide</div></div><span class="sarrow">›</span></div>
+    <div class="sitem" onclick="go('freelance')"><div class="sico">🎨</div><div><div class="sname">Freelancing</div><div class="sdesc">Design, editing, copywriting, web</div></div><span class="sarrow">›</span></div>
+    <div class="sitem" onclick="go('content')"><div class="sico">📱</div><div><div class="sname">Content & clipping</div><div class="sdesc">Faceless pages, TikTok, YouTube</div></div><span class="sarrow">›</span></div>
+    <div class="sitem" onclick="go('money-chat')"><div class="sico">🤖</div><div><div class="sname">AI business</div><div class="sdesc">AI websites, automation, consulting</div></div><span class="sarrow">›</span></div>
+    <div class="sitem" onclick="go('local')"><div class="sico">🚗</div><div><div class="sname">Local hustle</div><div class="sdesc">Car detailing, pressure washing, window cleaning</div></div><span class="sarrow">›</span></div>
+    <div class="sitem" onclick="go('investing')"><div class="sico">🏗️</div><div><div class="sname">Investing</div><div class="sdesc">Index funds, real estate, compound interest</div></div><span class="sarrow">›</span></div>
+
+    <div class="slbl">Today's lesson</div>
+    <div class="lesson" onclick="go('money-chat')">
+      <div class="lesson-tag">Day 12 · Reselling</div>
+      <div class="lesson-body">
+        <div class="lesson-title">Why most resellers fail in week one</div>
+        <div class="lesson-preview">It's not the products. It's not the suppliers. It's one mistake almost every beginner makes that kills their margins before they even start...</div>
+        <div class="lesson-meta"><span>3 min read</span><span>·</span><span>1 action today</span></div>
+      </div>
+    </div>
+
+    <button class="bdark" onclick="go('money-chat')" style="margin-top:4px">Ask your money mentor →</button>
+  </div>
+</div>
+
+<!-- RESELLING -->
+<div id="reselling" class="screen">
+  <div class="scroll">
+    <div class="status" style="padding-bottom:4px"><button class="bbtn" onclick="go('money')"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>Back</button></div>
+    <div class="chdr">
+      <div class="chdr-emoji">👟</div>
+      <div class="chdr-title">Reselling</div>
+      <div class="chdr-sub">Flip products for profit. Suppliers included.</div>
+    </div>
+
+    <div class="slbl">Lessons</div>
+    <div class="lesson">
+      <div class="lesson-tag">Day 1 · Foundation</div>
+      <div class="lesson-body">
+        <div class="lesson-title">How reselling actually works — the real model</div>
+        <div class="lesson-preview">You buy low, sell high. Simple. But the difference between someone making $200 and someone making $5K a month is one thing: sourcing...</div>
+        <div class="lesson-meta"><span>4 min read</span><span>·</span><span>Complete</span></div>
+      </div>
+    </div>
+    <div class="lesson">
+      <div class="lesson-tag">Day 2 · Products</div>
+      <div class="lesson-body">
+        <div class="lesson-title">What sells in 2026 and what doesn't</div>
+        <div class="lesson-preview">Most beginners pick the wrong products and wonder why nothing moves. Here's exactly what to sell based on your starting budget...</div>
+        <div class="lesson-meta"><span>3 min read</span><span>·</span><span>Complete</span></div>
+      </div>
+    </div>
+    <div class="lesson">
+      <div class="lesson-tag">Day 3 · Suppliers</div>
+      <div class="lesson-body">
+        <div class="lesson-title">How to contact suppliers and what to say</div>
+        <div class="lesson-preview">Most people are scared to message a supplier. Here's the exact script that gets you a response and a catalog within 24 hours...</div>
+        <div class="lesson-meta"><span>3 min read</span><span>·</span><span>Today's lesson</span></div>
+      </div>
+    </div>
+
+    <div class="slbl">Verified suppliers</div>
+    <div class="sup-card">
+      <div class="sup-ico">👕</div>
+      <div style="flex:1">
+        <div class="sup-name">Clothing Supplier</div>
+        <div class="sup-products">Spider Hoodies · Hellstar · Essentials · Bape · Supreme · Moncler · Gallery Dept · Balenciaga · LV · Chrome Hearts · North Face · Gucci · Amiri · Rhude · Arcteryx</div>
+        <button class="sup-btn">Contact on WhatsApp</button>
+      </div>
+    </div>
+    <div class="sup-card">
+      <div class="sup-ico">👟</div>
+      <div style="flex:1">
+        <div class="sup-name">Shoes Supplier</div>
+        <div class="sup-products">Designer sneakers · Streetwear shoes · Hype sneakers · Basketball shoes · Jordan · Nike · Yeezy · New Balance</div>
+        <button class="sup-btn">Contact on WhatsApp</button>
+      </div>
+    </div>
+    <div class="sup-card">
+      <div class="sup-ico">⌚</div>
+      <div style="flex:1">
+        <div class="sup-name">Watch Supplier</div>
+        <div class="sup-products">Rolex · AP · Cartier · Luxury watches · Moissanite watches</div>
+        <button class="sup-btn">Contact on WhatsApp</button>
+      </div>
+    </div>
+    <div class="sup-card">
+      <div class="sup-ico">💎</div>
+      <div style="flex:1">
+        <div class="sup-name">Jewelry Supplier</div>
+        <div class="sup-products">Chains · Rings · Moissanite jewelry · Luxury jewelry · High end pieces</div>
+        <button class="sup-btn">Contact on WhatsApp</button>
+      </div>
+    </div>
+    <div class="sup-card">
+      <div class="sup-ico">📱</div>
+      <div style="flex:1">
+        <div class="sup-name">iPhone Supplier</div>
+        <div class="sup-products">iPhones · AirPods · AirPods Max · Electronics</div>
+        <button class="sup-btn">Contact on WhatsApp</button>
+      </div>
+    </div>
+    <div class="sup-card">
+      <div class="sup-ico">🕶️</div>
+      <div style="flex:1">
+        <div class="sup-name">Glasses Supplier</div>
+        <div class="sup-products">Designer sunglasses · Luxury glasses · Frames</div>
+        <button class="sup-btn">Contact on WhatsApp</button>
+      </div>
+    </div>
+    <div class="sup-card">
+      <div class="sup-ico">🌸</div>
+      <div style="flex:1">
+        <div class="sup-name">Cologne Supplier</div>
+        <div class="sup-products">Designer fragrances · Luxury cologne · Perfume</div>
+        <button class="sup-btn">Contact on WhatsApp</button>
+      </div>
+    </div>
+    <button class="bdark" style="margin-top:8px" onclick="go('money-chat')">Ask reselling mentor →</button>
+  </div>
+</div>
+
+<!-- MONEY CHAT -->
+<div id="money-chat" class="screen">
+  <div class="chat-wrap">
+    <div class="chat-hdr">
+      <button class="bbtn" onclick="go('money')" style="padding:0;margin-right:8px"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button>
+      <div class="chat-av">💰</div>
+      <div><div class="chat-name">Money Mentor</div><div class="chat-st">Billionaire mindset · Always on</div></div>
+    </div>
+    <div class="chat-msgs" id="mmsg">
+      <div class="msg bot">No fluff. What path are you on and where are you right now?</div>
+      <div class="msg user">Reselling, just started with $200</div>
+      <div class="msg bot">Good starting point. First move — contact the clothing supplier in your supplier list. Message them on WhatsApp, ask for their catalog, pick 3-5 pieces under $30 each. List locally on Facebook Marketplace first. Mark up 3x minimum. Your first $500 is closer than you think. What city are you in?</div>
+    </div>
+    <div class="chat-inp-row">
+      <input class="cinp" type="text" placeholder="Ask your money mentor..." id="minp" onkeydown="send('mmsg','minp',event)">
+      <button class="csend" onclick="sendBtn('mmsg','minp')"><svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></button>
+    </div>
+  </div>
+</div>
+
+<!-- BODY -->
+<div id="body" class="screen">
+  <div class="scroll">
+    <div class="status" style="padding-bottom:4px"><button class="bbtn" onclick="go('home')"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>Back</button></div>
+    <div class="chdr">
+      <div class="chdr-emoji">💪</div>
+      <div class="chdr-title">Body</div>
+      <div class="chdr-sub">Build your best physical self</div>
+    </div>
+
+    <div class="scan-box" onclick="">
+      <div style="font-size:30px;margin-bottom:8px">📸</div>
+      <div style="font-size:14px;font-weight:600;color:var(--text)">Weekly progress scan</div>
+      <div style="font-size:12px;color:var(--muted);margin-top:4px">AI tracks your real physical change week over week</div>
+      <div style="margin-top:12px;background:var(--text);color:#fff;border-radius:20px;padding:8px 20px;font-size:13px;font-weight:600;display:inline-block">Scan now</div>
+    </div>
+
+    <div class="slbl">Goal</div>
+    <div class="goal-card">
+      <div class="goal-title">Build muscle + increase vertical</div>
+      <div class="goal-val">Week 4</div>
+      <div class="goal-sub">of 12 · Basketball performance plan</div>
+      <div class="pbar"><div class="pfill" style="width:33%"></div></div>
+    </div>
+
+    <div class="slbl">Your paths</div>
+    <div class="sitem" onclick="go('build-muscle')"><div class="sico">🏋️</div><div><div class="sname">Build muscle</div><div class="sdesc">Personalized split based on your body and goals</div></div><span class="sarrow">›</span></div>
+    <div class="sitem" onclick="go('lose-fat')"><div class="sico">🔥</div><div><div class="sname">Lose fat</div><div class="sdesc">Calorie deficit, cardio, body recomp</div></div><span class="sarrow">›</span></div>
+    <div class="sitem" onclick="go('body-chat')"><div class="sico">🏃</div><div><div class="sname">Run & endurance</div><div class="sdesc">5K, 10K, marathon, stamina</div></div><span class="sarrow">›</span></div>
+    <div class="sitem" onclick="go('sport-perf')"><div class="sico">🏀</div><div><div class="sname">Sport performance</div><div class="sdesc">Every sport — position specific training</div></div><span class="sarrow">›</span></div>
+    <div class="sitem" onclick="go('nutrition')"><div class="sico">🥗</div><div><div class="sname">Nutrition & meal plan</div><div class="sdesc">Your daily targets, simple meal ideas</div></div><span class="sarrow">›</span></div>
+    <div class="sitem" onclick="go('body-chat')"><div class="sico">😴</div><div><div class="sname">Sleep & recovery</div><div class="sdesc">Optimize rest, reduce soreness</div></div><span class="sarrow">›</span></div>
+
+    <div class="slbl">Today's workout — Push day</div>
+    <div class="card">
+      <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:12px">Bench press · 4 sets × 8 reps</div>
+      <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:12px">Overhead press · 3 sets × 10 reps</div>
+      <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:12px">Incline dumbbell · 3 sets × 12 reps</div>
+      <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:12px">Lateral raises · 3 sets × 15 reps</div>
+      <div style="font-size:13px;font-weight:600;color:var(--text)">Tricep pushdowns · 3 sets × 12 reps</div>
+    </div>
+
+    <div class="slbl">Your supplement stack</div>
+    <div class="supp-item"><div class="supp-ico">💊</div><div><div class="supp-name">Creatine Monohydrate</div><div class="supp-desc">Strength and muscle growth · 5g daily</div></div><div class="supp-time">Any time</div></div>
+    <div class="supp-item"><div class="supp-ico">🥛</div><div><div class="supp-name">Whey Protein</div><div class="supp-desc">Hit protein target · 1-2 scoops</div></div><div class="supp-time">Post workout</div></div>
+    <div class="supp-item"><div class="supp-ico">☀️</div><div><div class="supp-name">Vitamin D3 + K2</div><div class="supp-desc">Testosterone, bone health, immunity</div></div><div class="supp-time">Morning</div></div>
+    <div class="supp-item"><div class="supp-ico">🐟</div><div><div class="supp-name">Omega 3</div><div class="supp-desc">Recovery and inflammation · 2-3g</div></div><div class="supp-time">With food</div></div>
+    <div class="supp-item"><div class="supp-ico">🌙</div><div><div class="supp-name">Magnesium Glycinate</div><div class="supp-desc">Deep sleep and muscle recovery</div></div><div class="supp-time">Before bed</div></div>
+    <div class="supp-item"><div class="supp-ico">⚡</div><div><div class="supp-name">Beta Alanine</div><div class="supp-desc">Reduces fatigue, increases endurance</div></div><div class="supp-time">Pre workout</div></div>
+
+    <button class="bdark" style="margin-top:8px" onclick="go('body-chat')">Ask your body coach →</button>
+  </div>
+</div>
+
+<!-- BODY CHAT -->
+<div id="body-chat" class="screen">
+  <div class="chat-wrap">
+    <div class="chat-hdr">
+      <button class="bbtn" onclick="go('body')" style="padding:0;margin-right:8px"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button>
+      <div class="chat-av">💪</div>
+      <div><div class="chat-name">Body Coach</div><div class="chat-st">Personal trainer · Always on</div></div>
+    </div>
+    <div class="chat-msgs" id="bmsg">
+      <div class="msg bot">Before I build your plan I need to know who I'm working with. Age, height, weight, and main goal?</div>
+      <div class="msg user">16, 5'10, 165lbs, build muscle and improve vertical for basketball</div>
+      <div class="msg bot">Perfect starting point. At 16 your testosterone is at its peak — best time to build muscle fast. For vertical combined with muscle: Monday push, Tuesday lower body explosive, Wednesday skill, Thursday pull, Friday full body power. What's your gym access?</div>
+    </div>
+    <div class="chat-inp-row">
+      <input class="cinp" type="text" placeholder="Ask your body coach..." id="binp" onkeydown="send('bmsg','binp',event)">
+      <button class="csend" onclick="sendBtn('bmsg','binp')"><svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></button>
+    </div>
+  </div>
+</div>
+
+<!-- IMAGE -->
+<div id="image" class="screen">
+  <div class="scroll">
+    <div class="status" style="padding-bottom:4px"><button class="bbtn" onclick="go('home')"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>Back</button></div>
+    <div class="chdr">
+      <div class="chdr-emoji">🪞</div>
+      <div class="chdr-title">Image</div>
+      <div class="chdr-sub">Become the best looking version of yourself</div>
+    </div>
+
+    <div class="scan-box">
+      <div style="font-size:30px;margin-bottom:8px">📸</div>
+      <div style="font-size:14px;font-weight:600;color:var(--text)">Face scan</div>
+      <div style="font-size:12px;color:var(--muted);margin-top:4px">AI scores your image and builds your personalized plan</div>
+      <div style="margin-top:12px;background:var(--text);color:#fff;border-radius:20px;padding:8px 20px;font-size:13px;font-weight:600;display:inline-block">Scan now</div>
+    </div>
+
+    <div class="slbl">Goal</div>
+    <div class="goal-card">
+      <div class="goal-title">90 day glow up</div>
+      <div class="goal-val">Day 23</div>
+      <div class="goal-sub">of 90 · Clear skin + jawline focus</div>
+      <div class="pbar"><div class="pfill" style="width:25%"></div></div>
+    </div>
+
+    <div class="slbl">Morning routine</div>
+    <div class="rstep"><div class="rnum">1</div><div><div class="rname">Cleanser</div><div class="rdesc">CeraVe Foaming — salicylic acid, 60 seconds</div></div></div>
+    <div class="rstep"><div class="rnum">2</div><div><div class="rname">Niacinamide serum</div><div class="rdesc">The Ordinary 10% — 2-3 drops, pat in gently</div></div></div>
+    <div class="rstep"><div class="rnum">3</div><div><div class="rname">Moisturizer</div><div class="rdesc">CeraVe AM — light, non-comedogenic</div></div></div>
+    <div class="rstep"><div class="rnum">4</div><div><div class="rname">SPF 50</div><div class="rdesc">Non-negotiable — every single morning</div></div></div>
+
+    <div class="slbl">Night routine</div>
+    <div class="rstep"><div class="rnum">1</div><div><div class="rname">Oil cleanser</div><div class="rdesc">Remove sunscreen and oil buildup</div></div></div>
+    <div class="rstep"><div class="rnum">2</div><div><div class="rname">Water cleanser</div><div class="rdesc">CeraVe — second cleanse, clean slate</div></div></div>
+    <div class="rstep"><div class="rnum">3</div><div><div class="rname">Retinol</div><div class="rdesc">Start 2x week — cell turnover, anti aging</div></div></div>
+    <div class="rstep"><div class="rnum">4</div><div><div class="rname">Heavy moisturizer</div><div class="rdesc">CeraVe PM — lock in overnight</div></div></div>
+    <div class="rstep"><div class="rnum">5</div><div><div class="rname">Mouth tape</div><div class="rdesc">Nose breathing overnight — jawline and sleep</div></div></div>
+
+    <div class="slbl">Looksmaxxing — daily</div>
+    <div class="rstep"><div class="rnum">1</div><div><div class="rname">Mewing</div><div class="rdesc">Tongue on roof of mouth all day — jawline</div></div></div>
+    <div class="rstep"><div class="rnum">2</div><div><div class="rname">Chewing gum</div><div class="rdesc">10 minutes daily — jaw strength</div></div></div>
+    <div class="rstep"><div class="rnum">3</div><div><div class="rname">Posture check</div><div class="rdesc">Shoulders back, chin parallel to floor</div></div></div>
+
+    <div class="slbl">Skin supplements</div>
+    <div class="supp-item"><div class="supp-ico">✨</div><div><div class="supp-name">Collagen Peptides</div><div class="supp-desc">Skin elasticity and glow · 10-15g</div></div><div class="supp-time">Morning</div></div>
+    <div class="supp-item"><div class="supp-ico">💊</div><div><div class="supp-name">Biotin</div><div class="supp-desc">Hair and nail growth</div></div><div class="supp-time">Morning</div></div>
+    <div class="supp-item"><div class="supp-ico">🔵</div><div><div class="supp-name">Zinc</div><div class="supp-desc">Acne reduction and immunity</div></div><div class="supp-time">With food</div></div>
+    <div class="supp-item"><div class="supp-ico">🐟</div><div><div class="supp-name">Omega 3</div><div class="supp-desc">Skin glow and inflammation</div></div><div class="supp-time">With food</div></div>
+    <div class="supp-item"><div class="supp-ico">☀️</div><div><div class="supp-name">Vitamin D3</div><div class="supp-desc">Skin clarity and mood</div></div><div class="supp-time">Morning</div></div>
+
+    <div class="slbl">Focus areas</div>
+    <div class="sitem" onclick="go('hair')"><div class="sico">💇</div><div><div class="sname">Hair</div><div class="sdesc">Best cut for your face shape, growth routine</div></div><span class="sarrow">›</span></div>
+    <div class="sitem" onclick="go('teeth')"><div class="sico">🦷</div><div><div class="sname">Teeth & smile</div><div class="sdesc">Whitening, oil pulling, alignment</div></div><span class="sarrow">›</span></div>
+    <div class="sitem" onclick="go('image-chat')"><div class="sico">👁️</div><div><div class="sname">Eyebrows</div><div class="sdesc">Shape for your face, color matching</div></div><span class="sarrow">›</span></div>
+    <div class="sitem" onclick="go('image-chat')"><div class="sico">🧔</div><div><div class="sname">Beard & grooming</div><div class="sdesc">Styling, products, maintenance</div></div><span class="sarrow">›</span></div>
+
+    <button class="bdark" style="margin-top:8px" onclick="go('image-chat')">Ask your image coach →</button>
+  </div>
+</div>
+
+<!-- IMAGE CHAT -->
+<div id="image-chat" class="screen">
+  <div class="chat-wrap">
+    <div class="chat-hdr">
+      <button class="bbtn" onclick="go('image')" style="padding:0;margin-right:8px"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button>
+      <div class="chat-av">🪞</div>
+      <div><div class="chat-name">Image Coach</div><div class="chat-st">Honest, no sugarcoating · Always on</div></div>
+    </div>
+    <div class="chat-msgs" id="imsg">
+      <div class="msg bot">Direct with you — that's the only way this works. What's your biggest concern right now?</div>
+      <div class="msg user">Skin breaks out a lot and I want a sharper jawline</div>
+      <div class="msg bot">Both fixable. Acne: salicylic cleanser morning and night, niacinamide serum, SPF every morning. 6-8 weeks. Jawline: mewing every waking hour, mouth tape at night, 10 min chewing gum daily. 3-6 months for visible change. What's your current routine?</div>
+    </div>
+    <div class="chat-inp-row">
+      <input class="cinp" type="text" placeholder="Ask your image coach..." id="iinp" onkeydown="send('imsg','iinp',event)">
+      <button class="csend" onclick="sendBtn('imsg','iinp')"><svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></button>
+    </div>
+  </div>
+</div>
+
+<!-- STYLE -->
+<div id="style" class="screen">
+  <div class="scroll">
+    <div class="status" style="padding-bottom:4px"><button class="bbtn" onclick="go('home')"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>Back</button></div>
+    <div class="chdr">
+      <div class="chdr-emoji">👗</div>
+      <div class="chdr-title">Style</div>
+      <div class="chdr-sub">Dress like someone who has their life together</div>
+    </div>
+
+    <div class="scan-box">
+      <div style="font-size:30px;margin-bottom:8px">👚</div>
+      <div style="font-size:14px;font-weight:600;color:var(--text)">Wardrobe scan</div>
+      <div style="font-size:12px;color:var(--muted);margin-top:4px">Scan your wardrobe — get outfit combinations and what to buy next</div>
+      <div style="margin-top:12px;background:var(--text);color:#fff;border-radius:20px;padding:8px 20px;font-size:13px;font-weight:600;display:inline-block">Scan wardrobe</div>
+    </div>
+
+    <div class="slbl">Goal</div>
+    <div class="goal-card">
+      <div class="goal-title">Clean & minimal wardrobe</div>
+      <div class="goal-val">$180</div>
+      <div class="goal-sub">of $300 budget spent · 3 pieces left to buy</div>
+      <div class="pbar"><div class="pfill" style="width:60%"></div></div>
+    </div>
+
+    <div class="slbl">Outfit of the day</div>
+    <div class="card">
+      <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:8px">Today's fit — based on your wardrobe</div>
+      <div style="font-size:13px;color:var(--muted);line-height:1.6">White Uniqlo tee · Dark Levi's straight leg · Black AF1 · No accessories needed</div>
+      <div style="font-size:12px;color:var(--text);font-weight:600;margin-top:10px">Rating: 8.2 / 10</div>
+    </div>
+
+    <div class="slbl">Your style paths</div>
+    <div class="sitem" onclick="go('streetwear')"><div class="sico">🖤</div><div><div class="sname">Streetwear</div><div class="sdesc">Supreme, Jordan, Gallery Dept, hype brands</div></div><span class="sarrow">›</span></div>
+    <div class="sitem" onclick="go('minimal')"><div class="sico">⬜</div><div><div class="sname">Clean & minimal</div><div class="sdesc">Uniqlo, COS, basics done perfectly</div></div><span class="sarrow">›</span></div>
+    <div class="sitem" onclick="go('luxury-style')"><div class="sico">💎</div><div><div class="sname">Luxury</div><div class="sdesc">Designer, high end, investment pieces</div></div><span class="sarrow">›</span></div>
+    <div class="sitem" onclick="go('budget-style')"><div class="sico">💸</div><div><div class="sname">Budget upgrade</div><div class="sdesc">Look expensive on $200 or less</div></div><span class="sarrow">›</span></div>
+    <div class="sitem" onclick="go('style-chat')"><div class="sico">📐</div><div><div class="sname">Body type guide</div><div class="sdesc">What cuts and fits work for your body</div></div><span class="sarrow">›</span></div>
+    <div class="sitem" onclick="go('style-chat')"><div class="sico">🎨</div><div><div class="sname">Color matching</div><div class="sdesc">Colors that work for your skin tone</div></div><span class="sarrow">›</span></div>
+
+    <div class="slbl">Next buy</div>
+    <div class="card">
+      <div style="font-size:13px;font-weight:700;color:var(--text)">Recommended this week</div>
+      <div style="font-size:13px;color:var(--muted);margin-top:6px;line-height:1.6">A heavyweight black hoodie — fills the biggest gap in your current wardrobe. Budget: $40-60. Where: Uniqlo or H&M.</div>
+    </div>
+
+    <button class="bdark" style="margin-top:4px" onclick="go('style-chat')">Ask your stylist →</button>
+  </div>
+</div>
+
+<!-- STYLE CHAT -->
+<div id="style-chat" class="screen">
+  <div class="chat-wrap">
+    <div class="chat-hdr">
+      <button class="bbtn" onclick="go('style')" style="padding:0;margin-right:8px"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button>
+      <div class="chat-av">👗</div>
+      <div><div class="chat-name">Style Coach</div><div class="chat-st">Personal stylist · Always on</div></div>
+    </div>
+    <div class="chat-msgs" id="smsg">
+      <div class="msg bot">Let's build your style identity. Budget, current wardrobe, and what vibe are you going for?</div>
+      <div class="msg user">$300, wear basic stuff, want to look clean and put together</div>
+      <div class="msg bot">$300 spent right completely transforms a wardrobe. Three quality tees in white black grey from Uniqlo, one dark straight leg denim, one clean sneaker. Under $150. The rest goes on one statement piece. What's your body type?</div>
+    </div>
+    <div class="chat-inp-row">
+      <input class="cinp" type="text" placeholder="Ask your stylist..." id="sinp" onkeydown="send('smsg','sinp',event)">
+      <button class="csend" onclick="sendBtn('smsg','sinp')"><svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></button>
+    </div>
+  </div>
+</div>
+
+<!-- MIND -->
+<div id="mind" class="screen">
+  <div class="scroll">
+    <div class="status" style="padding-bottom:4px"><button class="bbtn" onclick="go('home')"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>Back</button></div>
+    <div class="chdr">
+      <div class="chdr-emoji">🧠</div>
+      <div class="chdr-title">Mind</div>
+      <div class="chdr-sub">Master your mental game</div>
+    </div>
+
+    <div class="slbl">Goal</div>
+    <div class="goal-card">
+      <div class="goal-title">Morning routine locked in</div>
+      <div class="goal-val">Day 12</div>
+      <div class="goal-sub">of 21 · Consistency challenge</div>
+      <div class="pbar"><div class="pfill" style="width:57%"></div></div>
+    </div>
+
+    <div class="slbl">Morning routine</div>
+    <div class="rstep"><div class="rnum">1</div><div><div class="rname">No phone for 30 min</div><div class="rdesc">Don't check anything — protect your morning mind</div></div></div>
+    <div class="rstep"><div class="rnum">2</div><div><div class="rname">Move your body</div><div class="rdesc">10-20 min — walk, workout, stretch anything</div></div></div>
+    <div class="rstep"><div class="rnum">3</div><div><div class="rname">Write one priority</div><div class="rdesc">The single most important thing today</div></div></div>
+    <div class="rstep"><div class="rnum">4</div><div><div class="rname">Start immediately</div><div class="rdesc">Do your priority before anything else</div></div></div>
+
+    <div class="slbl">Today's lesson</div>
+    <div class="lesson" onclick="go('mind-chat')">
+      <div class="lesson-tag">Day 12 · Discipline</div>
+      <div class="lesson-body">
+        <div class="lesson-title">Why willpower is a lie — and what actually works</div>
+        <div class="lesson-preview">Every person who's ever told you to "just be more disciplined" was wrong. Discipline isn't a trait you're born with. It's a system you build...</div>
+        <div class="lesson-meta"><span>3 min read</span><span>·</span><span>1 action today</span></div>
+      </div>
+    </div>
+
+    <div class="slbl">Focus areas</div>
+    <div class="sitem" onclick="go('discipline')"><div class="sico">🎯</div><div><div class="sname">Discipline & habits</div><div class="sdesc">Systems that run without motivation</div></div><span class="sarrow">›</span></div>
+    <div class="sitem" onclick="go('mind-chat')"><div class="sico">😤</div><div><div class="sname">Stress & anxiety</div><div class="sdesc">Manage pressure, stay calm under fire</div></div><span class="sarrow">›</span></div>
+    <div class="sitem" onclick="go('focus')"><div class="sico">🧘</div><div><div class="sname">Focus & clarity</div><div class="sdesc">Deep work, flow state, eliminate distraction</div></div><span class="sarrow">›</span></div>
+    <div class="sitem" onclick="go('mind-chat')"><div class="sico">📵</div><div><div class="sname">Digital detox</div><div class="sdesc">Break phone addiction, reclaim your time</div></div><span class="sarrow">›</span></div>
+    <div class="sitem" onclick="go('mind-chat')"><div class="sico">💭</div><div><div class="sname">Mental health</div><div class="sdesc">Journaling, processing emotions, support</div></div><span class="sarrow">›</span></div>
+
+    <button class="bdark" style="margin-top:8px" onclick="go('mind-chat')">Ask your mind coach →</button>
+  </div>
+</div>
+
+<!-- MIND CHAT -->
+<div id="mind-chat" class="screen">
+  <div class="chat-wrap">
+    <div class="chat-hdr">
+      <button class="bbtn" onclick="go('mind')" style="padding:0;margin-right:8px"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button>
+      <div class="chat-av">🧠</div>
+      <div><div class="chat-name">Mind Coach</div><div class="chat-st">Calm, deep, direct · Always on</div></div>
+    </div>
+    <div class="chat-msgs" id="nmsg">
+      <div class="msg bot">Your mind is the foundation of everything else you're building. What's getting in your way mentally right now?</div>
+      <div class="msg user">I get distracted too easily and can't stay consistent</div>
+      <div class="msg bot">That's not a willpower problem — it's a systems problem. Phone in another room during work. 90 minute focus blocks. Write your one priority the night before and do it first. What time do you wake up?</div>
+    </div>
+    <div class="chat-inp-row">
+      <input class="cinp" type="text" placeholder="Ask your mind coach..." id="ninp" onkeydown="send('nmsg','ninp',event)">
+      <button class="csend" onclick="sendBtn('nmsg','ninp')"><svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></button>
+    </div>
+  </div>
+</div>
+
+<!-- CONFIDENCE -->
+<div id="confidence" class="screen">
+  <div class="scroll">
+    <div class="status" style="padding-bottom:4px"><button class="bbtn" onclick="go('home')"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>Back</button></div>
+    <div class="chdr">
+      <div class="chdr-emoji">🔥</div>
+      <div class="chdr-title">Confidence</div>
+      <div class="chdr-sub">Walk into every room like you own it</div>
+    </div>
+
+    <div class="slbl">Goal</div>
+    <div class="goal-card">
+      <div class="goal-title">30 day social challenge</div>
+      <div class="goal-val">Day 7</div>
+      <div class="goal-sub">of 30 · One uncomfortable action daily</div>
+      <div class="pbar"><div class="pfill" style="width:23%"></div></div>
+    </div>
+
+    <div class="slbl">Today's challenge</div>
+    <div class="card">
+      <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:6px">Day 7 — Start a conversation with a stranger</div>
+      <div style="font-size:13px;color:var(--muted);line-height:1.6">Could be at a store, school, anywhere. Ask them something genuine. You don't need it to go anywhere. Just do it.</div>
+      <div style="margin-top:12px;background:var(--text);color:#fff;border-radius:20px;padding:8px 16px;font-size:12px;font-weight:600;display:inline-block;cursor:pointer">Mark complete</div>
+    </div>
+
+    <div class="slbl">Today's lesson</div>
+    <div class="lesson" onclick="go('conf-chat')">
+      <div class="lesson-tag">Day 7 · Social skills</div>
+      <div class="lesson-body">
+        <div class="lesson-title">The one shift that makes you magnetic in any room</div>
+        <div class="lesson-preview">Most people are thinking about themselves when they talk to someone. The ones who are naturally magnetic do the exact opposite...</div>
+        <div class="lesson-meta"><span>3 min read</span><span>·</span><span>1 action today</span></div>
+      </div>
+    </div>
+
+    <div class="slbl">Focus areas</div>
+    <div class="sitem" onclick="go('communication')"><div class="sico">🗣️</div><div><div class="sname">Communication</div><div class="sdesc">Talk to anyone, hold conversations, be heard</div></div><span class="sarrow">›</span></div>
+    <div class="sitem" onclick="go('dating')"><div class="sico">❤️</div><div><div class="sname">Dating</div><div class="sdesc">Attract, approach, build real connections</div></div><span class="sarrow">›</span></div>
+    <div class="sitem" onclick="go('networking')"><div class="sico">🤝</div><div><div class="sname">Networking</div><div class="sdesc">Build real relationships with the right people</div></div><span class="sarrow">›</span></div>
+    <div class="sitem" onclick="go('body-language')"><div class="sico">🧍</div><div><div class="sname">Body language</div><div class="sdesc">Posture, eye contact, presence</div></div><span class="sarrow">›</span></div>
+    <div class="sitem" onclick="go('boundaries')"><div class="sico">🚫</div><div><div class="sname">Boundaries</div><div class="sdesc">Say no, cut toxic people, protect your energy</div></div><span class="sarrow">›</span></div>
+
+    <button class="bdark" style="margin-top:8px" onclick="go('conf-chat')">Ask your confidence coach →</button>
+  </div>
+</div>
+
+<!-- CONFIDENCE CHAT -->
+<div id="conf-chat" class="screen">
+  <div class="chat-wrap">
+    <div class="chat-hdr">
+      <button class="bbtn" onclick="go('confidence')" style="padding:0;margin-right:8px"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button>
+      <div class="chat-av">🔥</div>
+      <div><div class="chat-name">Confidence Coach</div><div class="chat-st">Bold, direct · Always on</div></div>
+    </div>
+    <div class="chat-msgs" id="cmsg">
+      <div class="msg bot">Confidence is built through action not thinking. What situation makes you most uncomfortable right now?</div>
+      <div class="msg user">Talking to people I don't know especially girls</div>
+      <div class="msg bot">Stop trying to be impressive. Be genuinely curious. Ask people about themselves and actually listen. You become the most interesting person in the room by being the most interested. Your mission today: one conversation with a stranger. Just one. Can you do that?</div>
+    </div>
+    <div class="chat-inp-row">
+      <input class="cinp" type="text" placeholder="Ask your confidence coach..." id="cinp2" onkeydown="send('cmsg','cinp2',event)">
+      <button class="csend" onclick="sendBtn('cmsg','cinp2')"><svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></button>
+    </div>
+  </div>
+</div>
+
+<!-- SOCIAL -->
+<div id="social" class="screen">
+  <div class="tiktok-wrap">
+    <div class="social-hdr">
+      <div class="stabs">
+        <button class="stab on">For you</button>
+        <button class="stab">Following</button>
+        <button class="stab">Wins</button>
+      </div>
+      <div class="timer">28 min left</div>
+    </div>
+    <div class="tkfeed">
+      <div class="tkpost">
+        <div class="tkbg" style="background:#0f1a0f"></div>
+        <div class="tkgrad"></div>
+        <div class="tkside">
+          <div class="tkact"><div class="tkico"><svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div><span class="tkct">847</span></div>
+          <div class="tkact"><div class="tkico"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div><span class="tkct">142</span></div>
+          <div class="tkact"><div class="tkico"><svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg></div><span class="tkct">Share</span></div>
+        </div>
+        <div class="tkcontent">
+          <div class="tkuser"><div class="tkav" style="background:#c0392b;color:#fff">JK</div><div><div class="tkun">@jake_builds</div><div class="tksc">Creed Score 71 · Money</div></div></div>
+          <div class="tkcap">Started reselling with $200. Three weeks later I'm at $847. No magic — followed the Creed reselling plan every single day. Used the supplier list, listed locally first. This is real.</div>
+          <div class="tktags"><span class="ttag win">First $800</span><span class="ttag">Reselling</span><span class="ttag">Day 21</span></div>
+        </div>
+      </div>
+      <div class="tkpost">
+        <div class="tkbg" style="background:#0f0f1a"></div>
+        <div class="tkgrad"></div>
+        <div class="tkside">
+          <div class="tkact"><div class="tkico"><svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div><span class="tkct">612</span></div>
+          <div class="tkact"><div class="tkico"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div><span class="tkct">89</span></div>
+          <div class="tkact"><div class="tkico"><svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg></div><span class="tkct">Share</span></div>
+        </div>
+        <div class="tkcontent">
+          <div class="tkuser"><div class="tkav" style="background:#6c3483;color:#fff">AM</div><div><div class="tkun">@alexm</div><div class="tksc">Creed Score 58 · Image</div></div></div>
+          <div class="tkcap">60 day skin transformation. Breaking out every week before. Followed the Creed Image routine exactly — niacinamide morning and night, mouth tape every night. People started noticing at week 6.</div>
+          <div class="tktags"><span class="ttag win">60 day glow up</span><span class="ttag">Image</span><span class="ttag">Day 60</span></div>
+        </div>
+      </div>
+      <div class="tkpost">
+        <div class="tkbg" style="background:#1a0f0f"></div>
+        <div class="tkgrad"></div>
+        <div class="tkside">
+          <div class="tkact"><div class="tkico"><svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div><span class="tkct">1.2k</span></div>
+          <div class="tkact"><div class="tkico"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div><span class="tkct">201</span></div>
+          <div class="tkact"><div class="tkico"><svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg></div><span class="tkct">Share</span></div>
+        </div>
+        <div class="tkcontent">
+          <div class="tkuser"><div class="tkav" style="background:#1a5e3a;color:#fff">SL</div><div><div class="tkun">@sara_levels</div><div class="tksc">Creed Score 63 · Body</div></div></div>
+          <div class="tkcap">Vertical went from 24 to 31 inches in 8 weeks. The Creed basketball plan had me training things I never thought about. Coach pulled me aside after practice. He noticed.</div>
+          <div class="tktags"><span class="ttag win">+7 inch vertical</span><span class="ttag">Basketball</span><span class="ttag">Week 8</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="bnav">
+    <button class="nbtn" onclick="go('home')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Home</button>
+    <button class="nbtn on" onclick="go('social')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Social</button>
+    <button class="nbtn" onclick="go('missions')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>Missions</button>
+    <button class="nbtn" onclick="go('profile')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Profile</button>
+  </div>
+</div>
+
+<!-- MISSIONS -->
+<div id="missions" class="screen">
+  <div class="scroll">
+    <div class="status"><span class="stime">9:41</span></div>
+    <div class="topbar"><div style="font-size:22px;font-weight:700;color:var(--text)">Missions</div></div>
+    <div style="margin:0 20px 14px;background:var(--surface);border:0.5px solid var(--border);border-radius:var(--radius);padding:16px;display:flex;align-items:center;gap:16px">
+      <div><div style="font-family:'Playfair Display',serif;font-size:44px;color:var(--text);line-height:1">12</div><div style="font-size:12px;color:var(--muted)">day streak</div></div>
+      <div style="flex:1"><div style="display:flex;justify-content:space-between;margin-bottom:6px"><span style="font-size:13px;font-weight:600;color:var(--text)">Rank: Grinder</span><span style="font-size:12px;color:var(--muted)">→ Elite</span></div><div class="pbar"><div class="pfill" style="width:35%"></div></div><div style="font-size:11px;color:var(--muted);margin-top:4px">Hit $1,000 to rank up</div></div>
+    </div>
+    <div class="slbl">Completed today</div>
+    <div class="mitem mdone"><div class="mico">💧</div><div><div class="mtitle" style="text-decoration:line-through">Drink 3 liters of water</div><div class="mmeta">Body</div></div><div class="mcheck"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div></div>
+    <div class="mitem mdone"><div class="mico">🧴</div><div><div class="mtitle" style="text-decoration:line-through">Morning skincare routine</div><div class="mmeta">Image</div></div><div class="mcheck"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div></div>
+    <div class="mitem mdone"><div class="mico">📦</div><div><div class="mtitle" style="text-decoration:line-through">Research supplier catalog</div><div class="mmeta">Money · Reselling</div></div><div class="mcheck"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div></div>
+    <div class="slbl">Still to do</div>
+    <div class="mitem"><div class="mico">💰</div><div><div class="mtitle">Read today's lesson</div><div class="mmeta">Money · Day 12</div></div><div style="margin-left:auto;color:var(--muted);font-size:18px">›</div></div>
+    <div class="mitem"><div class="mico">🔥</div><div><div class="mtitle">Start one conversation with a stranger</div><div class="mmeta">Confidence · Day 7 challenge</div></div><div style="margin-left:auto;color:var(--muted);font-size:18px">›</div></div>
+  </div>
+  <div class="bnav">
+    <button class="nbtn" onclick="go('home')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Home</button>
+    <button class="nbtn" onclick="go('social')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Social</button>
+    <button class="nbtn on" onclick="go('missions')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>Missions</button>
+    <button class="nbtn" onclick="go('profile')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Profile</button>
+  </div>
+</div>
+
+<!-- PROFILE -->
+<div id="profile" class="screen">
+  <div class="scroll">
+    <div class="status"><span class="stime">9:41</span></div>
+    <div class="topbar"><div style="font-family:'Playfair Display',serif;font-size:20px;font-weight:700;color:var(--text)">Profile</div><button onclick="go('pricing')" class="upbtn">Go Pro →</button></div>
+    <div class="phdr">
+      <div class="pav">J</div>
+      <div><div class="pname">Your Name</div><div class="phandle">@yourhandle</div><div class="pplan">Free — upgrade for full access</div></div>
+    </div>
+    <div class="stats-row">
+      <div class="sbox"><div class="sval">47</div><div class="slb">Creed Score</div></div>
+      <div class="sbox"><div class="sval">12</div><div class="slb">Streak</div></div>
+      <div class="sbox"><div class="sval">Grinder</div><div class="slb">Rank</div></div>
+    </div>
+    <div class="slbl">Scores</div>
+    <div style="padding:0 20px 14px">
+      <div class="score-item"><span class="scemoji">💰</span><span class="scname">Money</span><div class="scbar"><div class="scfill" style="width:52%"></div></div><span class="scval">52</span></div>
+      <div class="score-item"><span class="scemoji">💪</span><span class="scname">Body</span><div class="scbar"><div class="scfill" style="width:61%"></div></div><span class="scval">61</span></div>
+      <div class="score-item"><span class="scemoji">🪞</span><span class="scname">Image</span><div class="scbar"><div class="scfill" style="width:44%"></div></div><span class="scval">44</span></div>
+      <div class="score-item"><span class="scemoji">👗</span><span class="scname">Style</span><div class="scbar"><div class="scfill" style="width:55%"></div></div><span class="scval">55</span></div>
+      <div class="score-item"><span class="scemoji">🧠</span><span class="scname">Mind</span><div class="scbar"><div class="scfill" style="width:38%"></div></div><span class="scval">38</span></div>
+      <div class="score-item"><span class="scemoji">🔥</span><span class="scname">Confidence</span><div class="scbar"><div class="scfill" style="width:31%"></div></div><span class="scval">31</span></div>
+    </div>
+    <div class="slbl">Badges</div>
+    <div class="badge-row">
+      <div class="badge on">First lesson</div>
+      <div class="badge on">7 day streak</div>
+      <div class="badge on">Grinder rank</div>
+      <div class="badge">30 day streak</div>
+      <div class="badge">Elite rank</div>
+      <div class="badge">First $1K</div>
+      <div class="badge">Pro member</div>
+    </div>
+    <button class="bdark" style="margin-top:8px" onclick="go('pricing')">Upgrade to Pro →</button>
+  </div>
+  <div class="bnav">
+    <button class="nbtn" onclick="go('home')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Home</button>
+    <button class="nbtn" onclick="go('social')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Social</button>
+    <button class="nbtn" onclick="go('missions')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>Missions</button>
+    <button class="nbtn on" onclick="go('profile')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Profile</button>
+  </div>
+</div>
+
+<!-- PRICING -->
+<div id="pricing" class="screen">
+  <div class="scroll">
+    <div class="status"><span class="stime">9:41</span></div>
+    <div class="topbar"><button class="bbtn" onclick="go('profile')"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>Back</button><div style="font-size:18px;font-weight:700;color:var(--text)">Go Pro</div><div style="width:48px"></div></div>
+    <div style="padding:0 20px 14px;font-size:13px;color:var(--muted)">Unlock your full Creed experience</div>
+    <div class="card">
+      <div class="pn">Free</div>
+      <div class="pp">$0</div>
+      <div class="pfeat"><span class="fc">✓</span>1 category — surface level</div>
+      <div class="pfeat"><span class="fc">✓</span>3 missions per week</div>
+      <div class="pfeat"><span class="fc">✓</span>Creed score</div>
+      <div class="pfeat"><span class="fc">✓</span>Social — view only</div>
+      <div class="pfeat"><span class="fx">✗</span>AI mentors locked</div>
+      <div class="pfeat"><span class="fx">✗</span>Full lessons locked</div>
+      <div class="pfeat"><span class="fx">✗</span>Suppliers locked</div>
+    </div>
+    <div class="card hot">
+      <div class="pbadge">Most popular</div>
+      <div class="pn">Monthly</div>
+      <div class="pp">$19<span class="pper">.99/month</span></div>
+      <div class="pfeat"><span class="fc">✓</span>All 6 categories fully unlocked</div>
+      <div class="pfeat"><span class="fc">✓</span>All 6 AI mentors — unlimited</div>
+      <div class="pfeat"><span class="fc">✓</span>Full lesson library</div>
+      <div class="pfeat"><span class="fc">✓</span>All scans — face, body, wardrobe</div>
+      <div class="pfeat"><span class="fc">✓</span>Full supplier directory</div>
+      <div class="pfeat"><span class="fc">✓</span>Routines, supplements, meal plans</div>
+      <div class="pfeat"><span class="fc">✓</span>Creed Social — full access</div>
+      <div class="pfeat"><span class="fc">✓</span>Cancel anytime</div>
+    </div>
+    <div class="card">
+      <div class="pn">Yearly</div>
+      <div class="pp">$99<span class="pper">.99/year</span></div>
+      <div class="psave">Save 58% vs monthly</div>
+      <div class="pfeat"><span class="fc">✓</span>Everything in Monthly</div>
+      <div class="pfeat"><span class="fc">✓</span>Founding member badge</div>
+      <div class="pfeat"><span class="fc">✓</span>Early access to new features</div>
+      <div class="pfeat"><span class="fc">✓</span>Priority AI responses</div>
+    </div>
+    <div class="card">
+      <div class="pn">Lifetime</div>
+      <div class="pp">$249<span class="pper"> one time</span></div>
+      <div class="pfeat"><span class="fc">✓</span>Everything forever</div>
+      <div class="pfeat"><span class="fc">✓</span>Never pay again</div>
+      <div class="pfeat"><span class="fc">✓</span>Founding member permanently</div>
+      <div class="pfeat"><span class="fc">✓</span>Direct line to Creed team</div>
+      <div class="pfeat"><span class="fc">✓</span>First access to every new feature</div>
+    </div>
+    <button class="bdark">Start Monthly — $19.99/month</button>
+    <button class="blight">Get Yearly — $99.99/year</button>
+    <div style="text-align:center;font-size:11px;color:var(--muted);padding:8px 20px 16px">Cancel anytime. No hidden fees.</div>
+  </div>
+</div>
+
+
+<!-- TRADING -->
+<div id="trading" class="screen">
+  <div class="scroll">
+    <div class="status" style="padding-bottom:4px"><button class="bbtn" onclick="go('money')"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>Money</button></div>
+    <div class="chdr"><div class="chdr-emoji">📈</div><div class="chdr-title">Trading</div><div class="chdr-sub">55 day bootcamp — from zero to executing</div></div>
+    <div class="goal-card"><div class="goal-title">Goal</div><div class="goal-val">Consistent profits</div><div class="goal-sub">Day 12 of 55 · Forex focus</div><div class="pbar"><div class="pfill" style="width:22%"></div></div></div>
+    <div class="slbl">Bootcamp lessons</div>
+    <div class="lesson"><div class="lesson-tag">Day 1 · Complete</div><div class="lesson-body"><div class="lesson-title">Take action — why most traders never start</div><div class="lesson-preview">The biggest barrier isn't knowledge. It's starting. Day one is about why you're here and what you actually need to succeed...</div><div class="lesson-meta"><span>3 min</span><span>·</span><span>✓ Complete</span></div></div></div>
+    <div class="lesson"><div class="lesson-tag">Day 2 · Complete</div><div class="lesson-body"><div class="lesson-title">Candlesticks — reading the market's language</div><div class="lesson-preview">Every price movement tells a story. Learn to read candlestick charts and see what most traders miss completely...</div><div class="lesson-meta"><span>4 min</span><span>·</span><span>✓ Complete</span></div></div></div>
+    <div class="lesson"><div class="lesson-tag">Day 12 · Today</div><div class="lesson-body"><div class="lesson-title">Liquidity — where the smart money moves</div><div class="lesson-preview">Most traders lose because they don't understand liquidity. Here's exactly how institutions move price and how to trade with them...</div><div class="lesson-meta"><span>5 min</span><span>·</span><span>Today's lesson</span></div></div></div>
+    <div class="slbl">Tools you need</div>
+    <div class="sitem"><div class="sico">📊</div><div><div class="sname">TradingView</div><div class="sdesc">Chart analysis — free plan works fine to start</div></div><span class="sarrow">›</span></div>
+    <div class="sitem"><div class="sico">💵</div><div><div class="sname">Robinhood</div><div class="sdesc">Stock and crypto trading — beginner friendly</div></div><span class="sarrow">›</span></div>
+    <div class="slbl">Budget guide</div>
+    <div class="budget-section">
+      <div class="budget-hdr"><div style="font-size:14px;font-weight:700;color:var(--text)">Starting capital guide</div></div>
+      <div class="budget-item"><span class="budget-name">Paper trading (practice)</span><span class="budget-price">$0</span></div>
+      <div class="budget-item"><span class="budget-name">First real account</span><span class="budget-price">$100+</span></div>
+      <div class="budget-item"><span class="budget-name">Recommended start</span><span class="budget-price">$500</span></div>
+      <div class="budget-item"><span class="budget-name">Never risk more than</span><span class="budget-price">1–2%</span></div>
+    </div>
+    <button class="bdark" onclick="go('money-chat')">Ask your trading mentor →</button>
+  </div>
+</div>
+
+<!-- CRYPTO -->
+<div id="crypto" class="screen">
+  <div class="scroll">
+    <div class="status" style="padding-bottom:4px"><button class="bbtn" onclick="go('money')"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>Money</button></div>
+    <div class="chdr"><div class="chdr-emoji">🪙</div><div class="chdr-title">Crypto</div><div class="chdr-sub">Invest smart. Don't get wrecked.</div></div>
+    <div class="goal-card"><div class="goal-title">Goal</div><div class="goal-val">First $500 invested</div><div class="goal-sub">Day 5 of 30</div><div class="pbar"><div class="pfill" style="width:17%"></div></div></div>
+    <div class="slbl">Lessons</div>
+    <div class="lesson"><div class="lesson-tag">Day 5 · Today</div><div class="lesson-body"><div class="lesson-title">How to set up a wallet and stay secure</div><div class="lesson-preview">Most people get hacked because of one simple mistake. Here's exactly how to set up a cold wallet and never lose your crypto...</div><div class="lesson-meta"><span>4 min</span><span>·</span><span>Today's lesson</span></div></div></div>
+    <div class="slbl">Budget allocation</div>
+    <div class="budget-section">
+      <div class="budget-hdr"><div style="font-size:14px;font-weight:700;color:var(--text)">How to allocate your first $500</div></div>
+      <div class="budget-item"><span class="budget-name">Bitcoin (BTC) — safest</span><span class="budget-price">50%</span></div>
+      <div class="budget-item"><span class="budget-name">Ethereum (ETH) — solid</span><span class="budget-price">30%</span></div>
+      <div class="budget-item"><span class="budget-name">Altcoins — higher risk</span><span class="budget-price">20%</span></div>
+      <div class="budget-item"><span class="budget-name">Never invest more than you can lose</span><span class="budget-price">Rule 1</span></div>
+    </div>
+    <button class="bdark" onclick="go('money-chat')">Ask your crypto mentor →</button>
+  </div>
+</div>
+
+<!-- DIGITAL PRODUCTS -->
+<div id="digital" class="screen">
+  <div class="scroll">
+    <div class="status" style="padding-bottom:4px"><button class="bbtn" onclick="go('money')"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>Money</button></div>
+    <div class="chdr"><div class="chdr-emoji">💻</div><div class="chdr-title">Digital Products</div><div class="chdr-sub">Create once. Sell forever.</div></div>
+    <div class="goal-card"><div class="goal-title">Goal</div><div class="goal-val">First sale</div><div class="goal-sub">Day 7 of 30</div><div class="pbar"><div class="pfill" style="width:23%"></div></div></div>
+    <div class="slbl">Lessons</div>
+    <div class="lesson"><div class="lesson-tag">Day 7 · Today</div><div class="lesson-body"><div class="lesson-title">How to price your first product</div><div class="lesson-preview">Most beginners price too low and attract the wrong customers. Here's the exact pricing strategy that maximizes sales and perceived value...</div><div class="lesson-meta"><span>3 min</span><span>·</span><span>Today's lesson</span></div></div></div>
+    <div class="slbl">Where to sell</div>
+    <div class="sitem"><div class="sico">🛍️</div><div><div class="sname">Whop</div><div class="sdesc">Best platform for digital products in 2026</div></div><span class="sarrow">›</span></div>
+    <div class="sitem"><div class="sico">💚</div><div><div class="sname">Gumroad</div><div class="sdesc">Simple, trusted, small cut per sale</div></div><span class="sarrow">›</span></div>
+    <div class="slbl">Budget to start</div>
+    <div class="budget-section">
+      <div class="budget-hdr"><div style="font-size:14px;font-weight:700;color:var(--text)">Cost to start</div></div>
+      <div class="budget-item"><span class="budget-name">Create product (Canva/Notion)</span><span class="budget-price">$0</span></div>
+      <div class="budget-item"><span class="budget-name">Platform fees</span><span class="budget-price">3–10%</span></div>
+      <div class="budget-item"><span class="budget-name">Optional paid ads</span><span class="budget-price">$50</span></div>
+    </div>
+    <button class="bdark" onclick="go('money-chat')">Ask your digital products mentor →</button>
+  </div>
+</div>
+
+<!-- AGENCY -->
+<div id="agency" class="screen">
+  <div class="scroll">
+    <div class="status" style="padding-bottom:4px"><button class="bbtn" onclick="go('money')"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>Money</button></div>
+    <div class="chdr"><div class="chdr-emoji">📣</div><div class="chdr-title">Agency</div><div class="chdr-sub">Get clients. Deliver results. Scale.</div></div>
+    <div class="goal-card"><div class="goal-title">Goal</div><div class="goal-val">First client</div><div class="goal-sub">$500–$1,500/month · Day 10 of 45</div><div class="pbar"><div class="pfill" style="width:22%"></div></div></div>
+    <div class="slbl">Today's lesson</div>
+    <div class="lesson"><div class="lesson-tag">Day 10 · Today</div><div class="lesson-body"><div class="lesson-title">Cold outreach that actually gets responses</div><div class="lesson-preview">95% of cold DMs get ignored because of one mistake. Here's the exact framework that gets business owners to reply...</div><div class="lesson-meta"><span>4 min</span><span>·</span><span>Today's lesson</span></div></div></div>
+    <div class="slbl">The opening script</div>
+    <div class="card"><div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:8px">DM that gets replies</div><div style="font-size:13px;color:var(--muted);line-height:1.6;font-style:italic">"Hey [Name] — noticed [specific thing]. Most [niche] businesses struggle with [problem]. Is that something you're dealing with?"</div><div style="font-size:12px;color:var(--blue);font-weight:600;margin-top:10px">Short. Specific. Ends with a question.</div></div>
+    <div class="slbl">Budget</div>
+    <div class="budget-section">
+      <div class="budget-hdr"><div style="font-size:14px;font-weight:700;color:var(--text)">Cost to start an agency</div></div>
+      <div class="budget-item"><span class="budget-name">Tools (free tiers)</span><span class="budget-price">$0</span></div>
+      <div class="budget-item"><span class="budget-name">First client charge</span><span class="budget-price">$500–$1,500</span></div>
+      <div class="budget-item"><span class="budget-name">Paid ads to scale (optional)</span><span class="budget-price">$200+</span></div>
+    </div>
+    <button class="bdark" onclick="go('money-chat')">Ask your agency mentor →</button>
+  </div>
+</div>
+
+<!-- FREELANCE -->
+<div id="freelance" class="screen">
+  <div class="scroll">
+    <div class="status" style="padding-bottom:4px"><button class="bbtn" onclick="go('money')"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>Money</button></div>
+    <div class="chdr"><div class="chdr-emoji">🎨</div><div class="chdr-title">Freelancing</div><div class="chdr-sub">Turn your skill into consistent income</div></div>
+    <div class="goal-card"><div class="goal-title">Goal</div><div class="goal-val">$2,000/month</div><div class="goal-sub">Day 8 of 45</div><div class="pbar"><div class="pfill" style="width:18%"></div></div></div>
+    <div class="slbl">Today's lesson</div>
+    <div class="lesson"><div class="lesson-tag">Day 8 · Today</div><div class="lesson-body"><div class="lesson-title">How to find your first client with no portfolio</div><div class="lesson-preview">Every freelancer starts with zero. Here's exactly how to land your first paid project when you have nothing to show yet...</div><div class="lesson-meta"><span>4 min</span><span>·</span><span>Today's lesson</span></div></div></div>
+    <div class="slbl">Where to find clients</div>
+    <div class="sitem"><div class="sico">💼</div><div><div class="sname">Fiverr & Upwork</div><div class="sdesc">Inbound clients — no outreach needed to start</div></div><span class="sarrow">›</span></div>
+    <div class="sitem"><div class="sico">📧</div><div><div class="sname">Cold outreach</div><div class="sdesc">Email and DM local businesses directly</div></div><span class="sarrow">›</span></div>
+    <div class="slbl">Budget</div>
+    <div class="budget-section">
+      <div class="budget-hdr"><div style="font-size:14px;font-weight:700;color:var(--text)">Cost to start</div></div>
+      <div class="budget-item"><span class="budget-name">Portfolio site (Carrd)</span><span class="budget-price">$19/yr</span></div>
+      <div class="budget-item"><span class="budget-name">Tools (mostly free)</span><span class="budget-price">$0</span></div>
+      <div class="budget-item"><span class="budget-name">First project rate</span><span class="budget-price">$150–$500</span></div>
+    </div>
+    <button class="bdark" onclick="go('money-chat')">Ask your freelance mentor →</button>
+  </div>
+</div>
+
+<!-- CONTENT -->
+<div id="content" class="screen">
+  <div class="scroll">
+    <div class="status" style="padding-bottom:4px"><button class="bbtn" onclick="go('money')"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>Money</button></div>
+    <div class="chdr"><div class="chdr-emoji">📱</div><div class="chdr-title">Content & Clipping</div><div class="chdr-sub">Build an audience. Monetize it.</div></div>
+    <div class="goal-card"><div class="goal-title">Goal</div><div class="goal-val">10K followers</div><div class="goal-sub">Day 6 of 60</div><div class="pbar"><div class="pfill" style="width:10%"></div></div></div>
+    <div class="slbl">Today's lesson</div>
+    <div class="lesson"><div class="lesson-tag">Day 6 · Today</div><div class="lesson-body"><div class="lesson-title">The hook formula that stops the scroll</div><div class="lesson-preview">The first 2 seconds of every video determines if it gets seen by 100 or 100,000 people. Here's the exact formula that works in 2026...</div><div class="lesson-meta"><span>3 min</span><span>·</span><span>Today's lesson</span></div></div></div>
+    <div class="slbl">Budget</div>
+    <div class="budget-section">
+      <div class="budget-hdr"><div style="font-size:14px;font-weight:700;color:var(--text)">Content creation costs</div></div>
+      <div class="budget-item"><span class="budget-name">Phone you already have</span><span class="budget-price">$0</span></div>
+      <div class="budget-item"><span class="budget-name">CapCut editing (free)</span><span class="budget-price">$0</span></div>
+      <div class="budget-item"><span class="budget-name">Optional ring light</span><span class="budget-price">$20</span></div>
+    </div>
+    <button class="bdark" onclick="go('money-chat')">Ask your content mentor →</button>
+  </div>
+</div>
+
+<!-- LOCAL HUSTLE -->
+<div id="local" class="screen">
+  <div class="scroll">
+    <div class="status" style="padding-bottom:4px"><button class="bbtn" onclick="go('money')"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>Money</button></div>
+    <div class="chdr"><div class="chdr-emoji">🚗</div><div class="chdr-title">Local Hustle</div><div class="chdr-sub">Cash in hand. This week.</div></div>
+    <div class="goal-card"><div class="goal-title">Goal</div><div class="goal-val">$500/week</div><div class="goal-sub">Local service income</div><div class="pbar"><div class="pfill" style="width:5%"></div></div></div>
+    <div class="slbl">Choose your hustle</div>
+    <div class="sitem"><div class="sico">🚗</div><div><div class="sname">Car detailing</div><div class="sdesc">$150–$400 per car · Start with $200 in supplies</div></div><span class="sarrow">›</span></div>
+    <div class="sitem"><div class="sico">💧</div><div><div class="sname">Pressure washing</div><div class="sdesc">$200–$500 per job · Rent equipment to start</div></div><span class="sarrow">›</span></div>
+    <div class="sitem"><div class="sico">🪟</div><div><div class="sname">Window washing</div><div class="sdesc">$100–$300 per house · Cheapest to start</div></div><span class="sarrow">›</span></div>
+    <div class="sitem"><div class="sico">✂️</div><div><div class="sname">Lawn care</div><div class="sdesc">$40–$100 per lawn · Recurring weekly clients</div></div><span class="sarrow">›</span></div>
+    <div class="slbl">Car detailing starter budget</div>
+    <div class="budget-section">
+      <div class="budget-hdr"><div style="font-size:14px;font-weight:700;color:var(--text)">What you need to start</div></div>
+      <div class="budget-item"><span class="budget-name">Vacuum + supplies</span><span class="budget-price">$80</span></div>
+      <div class="budget-item"><span class="budget-name">Interior detailing kit</span><span class="budget-price">$60</span></div>
+      <div class="budget-item"><span class="budget-name">Exterior wash kit</span><span class="budget-price">$40</span></div>
+      <div class="budget-item" style="background:var(--blue-light)"><span class="budget-name" style="font-weight:700">Total to start</span><span class="budget-price">$180</span></div>
+    </div>
+    <button class="bdark" onclick="go('money-chat')">Ask your mentor →</button>
+  </div>
+</div>
+
+<!-- INVESTING -->
+<div id="investing" class="screen">
+  <div class="scroll">
+    <div class="status" style="padding-bottom:4px"><button class="bbtn" onclick="go('money')"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>Money</button></div>
+    <div class="chdr"><div class="chdr-emoji">🏗️</div><div class="chdr-title">Investing</div><div class="chdr-sub">Make your money work for you</div></div>
+    <div class="goal-card"><div class="goal-title">Goal</div><div class="goal-val">$10,000 invested</div><div class="goal-sub">Starting from $500</div><div class="pbar"><div class="pfill" style="width:5%"></div></div></div>
+    <div class="slbl">Today's lesson</div>
+    <div class="lesson"><div class="lesson-tag">Day 1 · Today</div><div class="lesson-body"><div class="lesson-title">Index funds — the boring strategy that wins</div><div class="lesson-preview">Warren Buffett recommends it. The data backs it. Here's why index fund investing beats almost everything else for most people...</div><div class="lesson-meta"><span>4 min</span><span>·</span><span>Today's lesson</span></div></div></div>
+    <div class="slbl">$500 starter portfolio</div>
+    <div class="budget-section">
+      <div class="budget-hdr"><div style="font-size:14px;font-weight:700;color:var(--text)">How to allocate $500</div></div>
+      <div class="budget-item"><span class="budget-name">S&P 500 index fund (VOO)</span><span class="budget-price">60%</span></div>
+      <div class="budget-item"><span class="budget-name">Total market (VTI)</span><span class="budget-price">25%</span></div>
+      <div class="budget-item"><span class="budget-name">International (VXUS)</span><span class="budget-price">15%</span></div>
+    </div>
+    <button class="bdark" onclick="go('money-chat')">Ask your investing mentor →</button>
+  </div>
+</div>
+
+<!-- BUILD MUSCLE -->
+<div id="build-muscle" class="screen">
+  <div class="scroll">
+    <div class="status" style="padding-bottom:4px"><button class="bbtn" onclick="go('body')"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>Body</button></div>
+    <div class="chdr"><div class="chdr-emoji">🏋️</div><div class="chdr-title">Build Muscle</div><div class="chdr-sub">Your plan — built from your body scan</div></div>
+    <div class="goal-card"><div class="goal-title">Your stats</div><div class="goal-val">165 lbs</div><div class="goal-sub">5'10 · 16 yrs · Ectomorph · Week 4 of 12</div><div class="pbar"><div class="pfill" style="width:33%"></div></div></div>
+    <div class="slbl">Today's workout — Push day</div>
+    <div class="workout-section">
+      <div class="workout-hdr"><div class="workout-hdr-title">Monday · Push</div><div class="workout-hdr-sub">Chest, shoulders, triceps · ~55 min</div></div>
+      <div class="wex"><div class="wex-num">1</div><span class="wex-name">Bench press</span><span class="wex-sets">4 × 8</span></div>
+      <div class="wex"><div class="wex-num">2</div><span class="wex-name">Overhead press</span><span class="wex-sets">3 × 10</span></div>
+      <div class="wex"><div class="wex-num">3</div><span class="wex-name">Incline dumbbell press</span><span class="wex-sets">3 × 12</span></div>
+      <div class="wex"><div class="wex-num">4</div><span class="wex-name">Lateral raises</span><span class="wex-sets">3 × 15</span></div>
+      <div class="wex"><div class="wex-num">5</div><span class="wex-name">Tricep pushdowns</span><span class="wex-sets">3 × 12</span></div>
+    </div>
+    <div class="slbl">Weekly schedule</div>
+    <div class="card">
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <div style="display:flex;justify-content:space-between"><span style="font-size:13px;font-weight:600;color:var(--text)">Monday</span><span style="font-size:13px;color:var(--blue);font-weight:600">Push</span></div>
+        <div style="display:flex;justify-content:space-between"><span style="font-size:13px;font-weight:600;color:var(--text)">Tuesday</span><span style="font-size:13px;color:var(--blue);font-weight:600">Lower explosive</span></div>
+        <div style="display:flex;justify-content:space-between"><span style="font-size:13px;font-weight:600;color:var(--text)">Wednesday</span><span style="font-size:13px;color:var(--muted)">Skill + rest</span></div>
+        <div style="display:flex;justify-content:space-between"><span style="font-size:13px;font-weight:600;color:var(--text)">Thursday</span><span style="font-size:13px;color:var(--blue);font-weight:600">Pull</span></div>
+        <div style="display:flex;justify-content:space-between"><span style="font-size:13px;font-weight:600;color:var(--text)">Friday</span><span style="font-size:13px;color:var(--blue);font-weight:600">Full body power</span></div>
+        <div style="display:flex;justify-content:space-between"><span style="font-size:13px;font-weight:600;color:var(--text)">Saturday</span><span style="font-size:13px;color:var(--muted)">Cardio 30 min</span></div>
+        <div style="display:flex;justify-content:space-between"><span style="font-size:13px;font-weight:600;color:var(--text)">Sunday</span><span style="font-size:13px;color:var(--muted)">Full rest</span></div>
+      </div>
+    </div>
+    <button class="bdark" onclick="go('body-supps')">View your supplement stack →</button>
+    <button class="blight" onclick="go('body-chat')">Ask your body coach →</button>
+  </div>
+</div>
+
+<!-- LOSE FAT -->
+<div id="lose-fat" class="screen">
+  <div class="scroll">
+    <div class="status" style="padding-bottom:4px"><button class="bbtn" onclick="go('body')"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>Body</button></div>
+    <div class="chdr"><div class="chdr-emoji">🔥</div><div class="chdr-title">Lose Fat</div><div class="chdr-sub">Sustainable deficit. Real results.</div></div>
+    <div class="goal-card"><div class="goal-title">Goal</div><div class="goal-val">-20 lbs</div><div class="goal-sub">14 weeks · Based on your scan</div><div class="pbar"><div class="pfill" style="width:10%"></div></div></div>
+    <div class="slbl">Today's workout</div>
+    <div class="workout-section">
+      <div class="workout-hdr"><div class="workout-hdr-title">Monday · Full body + cardio</div><div class="workout-hdr-sub">Fat loss focus · ~50 min</div></div>
+      <div class="wex"><div class="wex-num">1</div><span class="wex-name">Squats</span><span class="wex-sets">3 × 15</span></div>
+      <div class="wex"><div class="wex-num">2</div><span class="wex-name">Push ups</span><span class="wex-sets">3 × 20</span></div>
+      <div class="wex"><div class="wex-num">3</div><span class="wex-name">HIIT cardio</span><span class="wex-sets">20 min</span></div>
+    </div>
+    <div class="slbl">Daily calorie target</div>
+    <div class="card"><div style="font-size:28px;font-weight:700;color:var(--blue)">1,800 cal</div><div style="font-size:13px;color:var(--muted);margin-top:4px">Based on your scan · 500 cal deficit · Sustainable pace</div></div>
+    <button class="bdark" onclick="go('body-supps')">View your supplement stack →</button>
+    <button class="blight" onclick="go('body-chat')">Ask your body coach →</button>
+  </div>
+</div>
+
+<!-- SPORT PERFORMANCE -->
+<div id="sport-perf" class="screen">
+  <div class="scroll">
+    <div class="status" style="padding-bottom:4px"><button class="bbtn" onclick="go('body')"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>Body</button></div>
+    <div class="chdr"><div class="chdr-emoji">🏀</div><div class="chdr-title">Sport Performance</div><div class="chdr-sub">Train like a pro. Perform like one.</div></div>
+    <div class="goal-card"><div class="goal-title">Goal</div><div class="goal-val">+7" vertical</div><div class="goal-sub">Basketball PG · 12 week program</div><div class="pbar"><div class="pfill" style="width:33%"></div></div></div>
+    <div class="slbl">Choose your sport</div>
+    <div class="sitem"><div class="sico">🏀</div><div><div class="sname">Basketball</div><div class="sdesc">Position specific — Point guard program</div></div><span style="font-size:11px;color:var(--blue);font-weight:600">Active</span></div>
+    <div class="sitem"><div class="sico">🏈</div><div><div class="sname">Football</div><div class="sdesc">Position specific training available</div></div><span class="sarrow">›</span></div>
+    <div class="sitem"><div class="sico">⚽</div><div><div class="sname">Soccer</div><div class="sdesc">Endurance, speed, position specific</div></div><span class="sarrow">›</span></div>
+    <div class="sitem"><div class="sico">🥊</div><div><div class="sname">Boxing & MMA</div><div class="sdesc">Conditioning, technique, mental game</div></div><span class="sarrow">›</span></div>
+    <div class="sitem"><div class="sico">🏊</div><div><div class="sname">Swimming</div><div class="sdesc">Stroke technique, endurance, dryland</div></div><span class="sarrow">›</span></div>
+    <div class="slbl">Today's training — Vertical program</div>
+    <div class="workout-section">
+      <div class="workout-hdr"><div class="workout-hdr-title">Tuesday · Lower explosive</div><div class="workout-hdr-sub">Vertical jump focus · ~60 min</div></div>
+      <div class="wex"><div class="wex-num">1</div><span class="wex-name">Depth jumps</span><span class="wex-sets">4 × 6</span></div>
+      <div class="wex"><div class="wex-num">2</div><span class="wex-name">Bulgarian split squat</span><span class="wex-sets">3 × 10</span></div>
+      <div class="wex"><div class="wex-num">3</div><span class="wex-name">Box jumps</span><span class="wex-sets">4 × 8</span></div>
+      <div class="wex"><div class="wex-num">4</div><span class="wex-name">Resistance band sprints</span><span class="wex-sets">6 × 20m</span></div>
+    </div>
+    <button class="bdark" onclick="go('body-supps')">View your supplement stack →</button>
+    <button class="blight" onclick="go('body-chat')">Ask your body coach →</button>
+  </div>
+</div>
+
+<!-- NUTRITION -->
+<div id="nutrition" class="screen">
+  <div class="scroll">
+    <div class="status" style="padding-bottom:4px"><button class="bbtn" onclick="go('body')"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>Body</button></div>
+    <div class="chdr"><div class="chdr-emoji">🥗</div><div class="chdr-title">Nutrition</div><div class="chdr-sub">Eat for your goal. Not a generic plan.</div></div>
+    <div class="goal-card"><div class="goal-title">Daily targets</div><div class="goal-val">2,800 cal</div><div class="goal-sub">160g protein · 340g carbs · 80g fat</div></div>
+    <div class="scan-box"><div style="font-size:28px;margin-bottom:8px">🥦</div><div style="font-size:14px;font-weight:700;color:var(--text)">Scan your fridge</div><div style="font-size:12px;color:var(--muted);margin-top:4px">Get recipes from exactly what you have</div><div style="margin-top:12px;background:var(--blue);color:#fff;border-radius:20px;padding:8px 20px;font-size:13px;font-weight:600;display:inline-block;cursor:pointer">Scan fridge</div></div>
+    <div class="slbl">Today's meals</div>
+    <div class="routine-section">
+      <div class="routine-hdr"><div class="routine-hdr-title">Meal plan — muscle building</div></div>
+      <div class="rstep"><div class="rnum">B</div><div><div class="rname">Breakfast</div><div class="rdesc">4 eggs, oats with banana, glass of milk</div><div class="rproduct">~680 cal · 42g protein</div></div></div>
+      <div class="rstep"><div class="rnum">L</div><div><div class="rname">Lunch</div><div class="rdesc">Chicken breast, white rice, broccoli</div><div class="rproduct">~720 cal · 55g protein</div></div></div>
+      <div class="rstep"><div class="rnum">P</div><div><div class="rname">Pre workout</div><div class="rdesc">Greek yogurt, apple, almonds</div><div class="rproduct">~380 cal · 20g protein</div></div></div>
+      <div class="rstep"><div class="rnum">A</div><div><div class="rname">Post workout</div><div class="rdesc">Protein shake, banana, rice cakes</div><div class="rproduct">~340 cal · 32g protein</div></div></div>
+      <div class="rstep"><div class="rnum">D</div><div><div class="rname">Dinner</div><div class="rdesc">Salmon, sweet potato, mixed salad</div><div class="rproduct">~680 cal · 45g protein</div></div></div>
+    </div>
+    <button class="bdark" onclick="go('body-chat')">Ask your body coach →</button>
+  </div>
+</div>
+
+<!-- BODY SUPPLEMENTS -->
+<div id="body-supps" class="screen">
+  <div class="scroll">
+    <div class="status" style="padding-bottom:4px"><button class="bbtn" onclick="go('body')"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>Body</button></div>
+    <div class="chdr"><div class="chdr-emoji">💊</div><div class="chdr-title">Supplements</div><div class="chdr-sub">Your personalized stack — what actually works</div></div>
+    <div class="goal-card"><div class="goal-title">Your stack</div><div class="goal-val">6 supplements</div><div class="goal-sub">Optimized for muscle + performance</div></div>
+    <div class="slbl">Morning</div>
+    <div class="supp-section">
+      <div class="supp-hdr"><div class="supp-hdr-title">Take with breakfast</div></div>
+      <div class="supp-item"><div class="supp-dot"></div><div class="supp-info"><div class="supp-name">Vitamin D3 + K2</div><div class="supp-desc">Testosterone, bone health · 2000-5000 IU · Thorne</div></div><div class="supp-time">Morning</div></div>
+      <div class="supp-item"><div class="supp-dot"></div><div class="supp-info"><div class="supp-name">Omega 3 Fish Oil</div><div class="supp-desc">Recovery and inflammation · 2-3g · Nordic Naturals</div></div><div class="supp-time">Morning</div></div>
+    </div>
+    <div class="slbl">Pre workout</div>
+    <div class="supp-section">
+      <div class="supp-hdr"><div class="supp-hdr-title">30 min before training</div></div>
+      <div class="supp-item"><div class="supp-dot"></div><div class="supp-info"><div class="supp-name">Creatine Monohydrate</div><div class="supp-desc">Strength and muscle growth · 5g · Bulk Supplements</div></div><div class="supp-time">Any time</div></div>
+      <div class="supp-item"><div class="supp-dot"></div><div class="supp-info"><div class="supp-name">Beta Alanine</div><div class="supp-desc">Reduces fatigue · 3.2g · NOW Sports</div></div><div class="supp-time">Pre workout</div></div>
+    </div>
+    <div class="slbl">Post workout</div>
+    <div class="supp-section">
+      <div class="supp-hdr"><div class="supp-hdr-title">Within 30 min after training</div></div>
+      <div class="supp-item"><div class="supp-dot"></div><div class="supp-info"><div class="supp-name">Whey Protein</div><div class="supp-desc">Hit protein target · 1-2 scoops · Optimum Nutrition</div></div><div class="supp-time">Post workout</div></div>
+    </div>
+    <div class="slbl">Before bed</div>
+    <div class="supp-section">
+      <div class="supp-hdr"><div class="supp-hdr-title">30-60 min before sleep</div></div>
+      <div class="supp-item"><div class="supp-dot"></div><div class="supp-info"><div class="supp-name">Magnesium Glycinate</div><div class="supp-desc">Deep sleep and recovery · 200-400mg · Thorne</div></div><div class="supp-time">Before bed</div></div>
+      <div class="supp-item"><div class="supp-dot"></div><div class="supp-info"><div class="supp-name">Zinc</div><div class="supp-desc">Testosterone and immunity · 25-40mg · NOW Foods</div></div><div class="supp-time">Before bed</div></div>
+    </div>
+    <div class="slbl">Monthly cost</div>
+    <div class="budget-section">
+      <div class="budget-hdr"><div style="font-size:14px;font-weight:700;color:var(--text)">Supplement budget</div></div>
+      <div class="budget-item"><span class="budget-name">Creatine</span><span class="budget-price">$15</span></div>
+      <div class="budget-item"><span class="budget-name">Whey protein</span><span class="budget-price">$35</span></div>
+      <div class="budget-item"><span class="budget-name">Vitamin D3 + Omega 3</span><span class="budget-price">$20</span></div>
+      <div class="budget-item"><span class="budget-name">Magnesium + Zinc</span><span class="budget-price">$15</span></div>
+      <div class="budget-item" style="background:var(--blue-light)"><span class="budget-name" style="font-weight:700">Total per month</span><span class="budget-price">~$85</span></div>
+    </div>
+    <button class="bdark" onclick="go('body-chat')">Ask your body coach →</button>
+  </div>
+</div>
+
+<!-- SKINCARE -->
+<div id="skincare" class="screen">
+  <div class="scroll">
+    <div class="status" style="padding-bottom:4px"><button class="bbtn" onclick="go('image')"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>Image</button></div>
+    <div class="chdr"><div class="chdr-emoji">🧴</div><div class="chdr-title">Skincare</div><div class="chdr-sub">Your routine built for your skin type</div></div>
+    <div class="goal-card"><div class="goal-title">Skin goal</div><div class="goal-val">Clear skin</div><div class="goal-sub">Acne-prone, oily · 6-8 weeks</div><div class="pbar"><div class="pfill" style="width:30%"></div></div></div>
+    <div class="slbl">Morning routine</div>
+    <div class="routine-section">
+      <div class="routine-hdr"><div class="routine-hdr-title">Every morning — 3 min</div></div>
+      <div class="rstep"><div class="rnum">1</div><div><div class="rname">Cleanser</div><div class="rdesc">60 seconds, pat dry</div><div class="rproduct">CeraVe Foaming Facial Cleanser — $14</div></div></div>
+      <div class="rstep"><div class="rnum">2</div><div><div class="rname">Niacinamide serum</div><div class="rdesc">2-3 drops, pat in gently</div><div class="rproduct">The Ordinary 10% Niacinamide — $6</div></div></div>
+      <div class="rstep"><div class="rnum">3</div><div><div class="rname">Moisturizer</div><div class="rdesc">Light layer, non-comedogenic</div><div class="rproduct">CeraVe AM Moisturizer — $16</div></div></div>
+      <div class="rstep"><div class="rnum">4</div><div><div class="rname">SPF 50</div><div class="rdesc">Every morning, non-negotiable</div><div class="rproduct">La Roche-Posay Anthelios — $20</div></div></div>
+    </div>
+    <div class="slbl">Night routine</div>
+    <div class="routine-section">
+      <div class="routine-hdr"><div class="routine-hdr-title">Every night — 5 min</div></div>
+      <div class="rstep"><div class="rnum">1</div><div><div class="rname">Oil cleanser</div><div class="rdesc">Remove sunscreen and buildup</div><div class="rproduct">Banila Co Clean It Zero — $16</div></div></div>
+      <div class="rstep"><div class="rnum">2</div><div><div class="rname">Water cleanser</div><div class="rdesc">Second cleanse, clean slate</div><div class="rproduct">CeraVe Foaming — same as morning</div></div></div>
+      <div class="rstep"><div class="rnum">3</div><div><div class="rname">Retinol</div><div class="rdesc">Start 2x per week — cell turnover</div><div class="rproduct">The Ordinary Retinol 0.5% — $8</div></div></div>
+      <div class="rstep"><div class="rnum">4</div><div><div class="rname">Heavy moisturizer</div><div class="rdesc">Lock everything in overnight</div><div class="rproduct">CeraVe PM Moisturizer — $16</div></div></div>
+      <div class="rstep"><div class="rnum">5</div><div><div class="rname">Mouth tape</div><div class="rdesc">Nose breathing overnight — jawline and sleep</div><div class="rproduct">Hostage Tape — $20/month</div></div></div>
+    </div>
+    <div class="slbl">First month budget</div>
+    <div class="budget-section">
+      <div class="budget-hdr"><div style="font-size:14px;font-weight:700;color:var(--text)">Full starter routine</div></div>
+      <div class="budget-item"><span class="budget-name">CeraVe cleanser</span><span class="budget-price">$14</span></div>
+      <div class="budget-item"><span class="budget-name">Niacinamide serum</span><span class="budget-price">$6</span></div>
+      <div class="budget-item"><span class="budget-name">Moisturizer AM + PM</span><span class="budget-price">$32</span></div>
+      <div class="budget-item"><span class="budget-name">SPF + Retinol</span><span class="budget-price">$28</span></div>
+      <div class="budget-item" style="background:var(--blue-light)"><span class="budget-name" style="font-weight:700">Total first month</span><span class="budget-price">~$80</span></div>
+    </div>
+    <button class="bdark" onclick="go('image-supps')">View skin supplements →</button>
+    <button class="blight" onclick="go('image-chat')">Ask your image coach →</button>
+  </div>
+</div>
+
+<!-- LOOKSMAXXING -->
+<div id="looksmax" class="screen">
+  <div class="scroll">
+    <div class="status" style="padding-bottom:4px"><button class="bbtn" onclick="go('image')"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>Image</button></div>
+    <div class="chdr"><div class="chdr-emoji">💪</div><div class="chdr-title">Looksmaxxing</div><div class="chdr-sub">Maximize your natural potential</div></div>
+    <div class="goal-card"><div class="goal-title">Timeline</div><div class="goal-val">6 months</div><div class="goal-sub">Full transformation · Day 23</div><div class="pbar"><div class="pfill" style="width:13%"></div></div></div>
+    <div class="slbl">Daily habits</div>
+    <div class="routine-section">
+      <div class="routine-hdr"><div class="routine-hdr-title">Do these every single day</div></div>
+      <div class="rstep"><div class="rnum">1</div><div><div class="rname">Mewing</div><div class="rdesc">Tongue on roof of mouth all day — reshapes jaw</div><div class="rproduct">Timeline: 3-6 months for visible change</div></div></div>
+      <div class="rstep"><div class="rnum">2</div><div><div class="rname">Chewing gum</div><div class="rdesc">10 minutes daily — jaw muscle strength</div><div class="rproduct">Mastic gum for best results — $15/month</div></div></div>
+      <div class="rstep"><div class="rnum">3</div><div><div class="rname">Posture</div><div class="rdesc">Shoulders back, chin parallel — all day</div><div class="rproduct">Timeline: 4-8 weeks to make automatic</div></div></div>
+      <div class="rstep"><div class="rnum">4</div><div><div class="rname">Mouth tape at night</div><div class="rdesc">Nose breathing — jawline and sleep quality</div><div class="rproduct">Hostage Tape — $20 for 30 nights</div></div></div>
+    </div>
+    <div class="slbl">Realistic timelines</div>
+    <div class="card">
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div style="display:flex;justify-content:space-between"><span style="font-size:13px;font-weight:500;color:var(--text)">Clear skin</span><span style="font-size:12px;color:var(--blue);font-weight:600">6-8 weeks</span></div>
+        <div style="display:flex;justify-content:space-between"><span style="font-size:13px;font-weight:500;color:var(--text)">Whiter teeth</span><span style="font-size:12px;color:var(--blue);font-weight:600">3-4 weeks</span></div>
+        <div style="display:flex;justify-content:space-between"><span style="font-size:13px;font-weight:500;color:var(--text)">Better posture</span><span style="font-size:12px;color:var(--blue);font-weight:600">4-8 weeks</span></div>
+        <div style="display:flex;justify-content:space-between"><span style="font-size:13px;font-weight:500;color:var(--text)">Sharper jawline</span><span style="font-size:12px;color:var(--blue);font-weight:600">3-6 months</span></div>
+        <div style="display:flex;justify-content:space-between"><span style="font-size:13px;font-weight:500;color:var(--text)">Full transformation</span><span style="font-size:12px;color:var(--blue);font-weight:600">6 months</span></div>
+      </div>
+    </div>
+    <button class="bdark" onclick="go('image-chat')">Ask your image coach →</button>
+  </div>
+</div>
+
+<!-- HAIR -->
+<div id="hair" class="screen">
+  <div class="scroll">
+    <div class="status" style="padding-bottom:4px"><button class="bbtn" onclick="go('image')"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>Image</button></div>
+    <div class="chdr"><div class="chdr-emoji">💇</div><div class="chdr-title">Hair</div><div class="chdr-sub">The right cut changes everything</div></div>
+    <div class="slbl">Cuts by face shape</div>
+    <div class="sitem"><div class="sico">⬜</div><div><div class="sname">Square face</div><div class="sdesc">Textured crops, side parts — avoid box fades</div></div><span class="sarrow">›</span></div>
+    <div class="sitem"><div class="sico">🥚</div><div><div class="sname">Oval face</div><div class="sdesc">Almost anything works — most versatile shape</div></div><span class="sarrow">›</span></div>
+    <div class="sitem"><div class="sico">🔺</div><div><div class="sname">Heart face</div><div class="sdesc">Side swept, textured — add width at jawline</div></div><span class="sarrow">›</span></div>
+    <div class="sitem"><div class="sico">🟩</div><div><div class="sname">Round face</div><div class="sdesc">Height on top, tight sides — creates length</div></div><span class="sarrow">›</span></div>
+    <div class="slbl">Growth routine</div>
+    <div class="routine-section">
+      <div class="routine-hdr"><div class="routine-hdr-title">Weekly routine</div></div>
+      <div class="rstep"><div class="rnum">1</div><div><div class="rname">Scalp massage</div><div class="rdesc">5 minutes daily — increases blood flow to follicles</div></div></div>
+      <div class="rstep"><div class="rnum">2</div><div><div class="rname">Shampoo 2-3x per week</div><div class="rdesc">Daily shampooing strips natural oils</div><div class="rproduct">Nizoral for dandruff · Head & Shoulders maintenance</div></div></div>
+      <div class="rstep"><div class="rnum">3</div><div><div class="rname">Condition every wash</div><div class="rdesc">Apply to ends only, leave 2 minutes</div></div></div>
+    </div>
+    <button class="bdark" onclick="go('image-chat')">Ask your image coach →</button>
+  </div>
+</div>
+
+<!-- GROOMING -->
+<div id="grooming" class="screen">
+  <div class="scroll">
+    <div class="status" style="padding-bottom:4px"><button class="bbtn" onclick="go('image')"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>Image</button></div>
+    <div class="chdr"><div class="chdr-emoji">✂️</div><div class="chdr-title">Grooming</div><div class="chdr-sub">The details that separate good from great</div></div>
+    <div class="slbl">Weekly checklist</div>
+    <div class="routine-section">
+      <div class="routine-hdr"><div class="routine-hdr-title">Every week — non-negotiable</div></div>
+      <div class="rstep"><div class="rnum">1</div><div><div class="rname">Eyebrows</div><div class="rdesc">Clean the middle and underneath — never over-pluck the top</div><div class="rproduct">Tweezerman tweezers $20 · Soap brow gel $8</div></div></div>
+      <div class="rstep"><div class="rnum">2</div><div><div class="rname">Beard line</div><div class="rdesc">Clean neckline below the jaw — defines your face</div><div class="rproduct">Wahl trimmer — $25</div></div></div>
+      <div class="rstep"><div class="rnum">3</div><div><div class="rname">Nails</div><div class="rdesc">Trim and clean every week — people notice this</div></div></div>
+      <div class="rstep"><div class="rnum">4</div><div><div class="rname">Nose and ear hair</div><div class="rdesc">Check weekly — one spot kills the whole look</div><div class="rproduct">Conair trimmer — $12</div></div></div>
+    </div>
+    <div class="slbl">One time kit budget</div>
+    <div class="budget-section">
+      <div class="budget-hdr"><div style="font-size:14px;font-weight:700;color:var(--text)">Buy once, use for years</div></div>
+      <div class="budget-item"><span class="budget-name">Hair trimmer</span><span class="budget-price">$25</span></div>
+      <div class="budget-item"><span class="budget-name">Tweezers</span><span class="budget-price">$20</span></div>
+      <div class="budget-item"><span class="budget-name">Nose trimmer</span><span class="budget-price">$12</span></div>
+      <div class="budget-item" style="background:var(--blue-light)"><span class="budget-name" style="font-weight:700">Total one time</span><span class="budget-price">$57</span></div>
+    </div>
+    <button class="bdark" onclick="go('image-chat')">Ask your image coach →</button>
+  </div>
+</div>
+
+<!-- TEETH -->
+<div id="teeth" class="screen">
+  <div class="scroll">
+    <div class="status" style="padding-bottom:4px"><button class="bbtn" onclick="go('image')"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>Image</button></div>
+    <div class="chdr"><div class="chdr-emoji">🦷</div><div class="chdr-title">Teeth & Smile</div><div class="chdr-sub">A great smile changes how people see you</div></div>
+    <div class="goal-card"><div class="goal-title">Goal</div><div class="goal-val">Noticeably whiter</div><div class="goal-sub">3-4 weeks consistent routine</div><div class="pbar"><div class="pfill" style="width:20%"></div></div></div>
+    <div class="slbl">Daily routine</div>
+    <div class="routine-section">
+      <div class="routine-hdr"><div class="routine-hdr-title">Morning and night</div></div>
+      <div class="rstep"><div class="rnum">1</div><div><div class="rname">Electric toothbrush 2 min</div><div class="rdesc">Visible difference in 2 weeks</div><div class="rproduct">Oral-B Pro 1000 — $50</div></div></div>
+      <div class="rstep"><div class="rnum">2</div><div><div class="rname">Remineralizing toothpaste</div><div class="rdesc">Strengthens enamel while whitening</div><div class="rproduct">Sensodyne Pronamel — $8</div></div></div>
+      <div class="rstep"><div class="rnum">3</div><div><div class="rname">Whitening strips 3x/week</div><div class="rdesc">30 minutes · 3 shades whiter in 3 weeks</div><div class="rproduct">Crest 3D Whitestrips — $30</div></div></div>
+      <div class="rstep"><div class="rnum">4</div><div><div class="rname">Oil pulling morning</div><div class="rdesc">Coconut oil 10-15 min — bacteria, whitening</div><div class="rproduct">Coconut oil — $8</div></div></div>
+    </div>
+    <button class="bdark" onclick="go('image-chat')">Ask your image coach →</button>
+  </div>
+</div>
+
+<!-- IMAGE SUPPLEMENTS -->
+<div id="image-supps" class="screen">
+  <div class="scroll">
+    <div class="status" style="padding-bottom:4px"><button class="bbtn" onclick="go('image')"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>Image</button></div>
+    <div class="chdr"><div class="chdr-emoji">💊</div><div class="chdr-title">Skin & Hair Supplements</div><div class="chdr-sub">What actually works — evidence backed</div></div>
+    <div class="goal-card"><div class="goal-title">Your stack</div><div class="goal-val">5 supplements</div><div class="goal-sub">Skin clarity and hair growth</div></div>
+    <div class="slbl">Morning with food</div>
+    <div class="supp-section">
+      <div class="supp-hdr"><div class="supp-hdr-title">Every morning with breakfast</div></div>
+      <div class="supp-item"><div class="supp-dot"></div><div class="supp-info"><div class="supp-name">Collagen Peptides</div><div class="supp-desc">Skin elasticity and glow · 10-15g · Vital Proteins</div></div><div class="supp-time">Morning</div></div>
+      <div class="supp-item"><div class="supp-dot"></div><div class="supp-info"><div class="supp-name">Vitamin D3</div><div class="supp-desc">Skin clarity and mood · 2000-5000 IU · Thorne</div></div><div class="supp-time">Morning</div></div>
+      <div class="supp-item"><div class="supp-dot"></div><div class="supp-info"><div class="supp-name">Omega 3</div><div class="supp-desc">Skin glow and inflammation · 2-3g · Nordic Naturals</div></div><div class="supp-time">Morning</div></div>
+    </div>
+    <div class="slbl">With any meal</div>
+    <div class="supp-section">
+      <div class="supp-hdr"><div class="supp-hdr-title">Take with food</div></div>
+      <div class="supp-item"><div class="supp-dot"></div><div class="supp-info"><div class="supp-name">Zinc</div><div class="supp-desc">Acne reduction — one of the most proven · NOW Foods</div></div><div class="supp-time">With food</div></div>
+      <div class="supp-item"><div class="supp-dot"></div><div class="supp-info"><div class="supp-name">Biotin</div><div class="supp-desc">Hair and nail growth · 5000mcg · Sports Research</div></div><div class="supp-time">With food</div></div>
+    </div>
+    <div class="slbl">Monthly cost</div>
+    <div class="budget-section">
+      <div class="budget-hdr"><div style="font-size:14px;font-weight:700;color:var(--text)">Skin supplement budget</div></div>
+      <div class="budget-item"><span class="budget-name">Collagen peptides</span><span class="budget-price">$25</span></div>
+      <div class="budget-item"><span class="budget-name">Vitamin D3 + Omega 3</span><span class="budget-price">$20</span></div>
+      <div class="budget-item"><span class="budget-name">Zinc + Biotin</span><span class="budget-price">$15</span></div>
+      <div class="budget-item" style="background:var(--blue-light)"><span class="budget-name" style="font-weight:700">Total per month</span><span class="budget-price">~$60</span></div>
+    </div>
+    <button class="bdark" onclick="go('image-chat')">Ask your image coach →</button>
+  </div>
+</div>
+
+<!-- STREETWEAR -->
+<div id="streetwear" class="screen">
+  <div class="scroll">
+    <div class="status" style="padding-bottom:4px"><button class="bbtn" onclick="go('style')"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>Style</button></div>
+    <div class="chdr"><div class="chdr-emoji">🖤</div><div class="chdr-title">Streetwear</div><div class="chdr-sub">Move different. Look different.</div></div>
+    <div class="slbl">Essential pieces</div>
+    <div class="routine-section">
+      <div class="routine-hdr"><div class="routine-hdr-title">Build your streetwear wardrobe</div></div>
+      <div class="rstep"><div class="rnum">1</div><div><div class="rname">Graphic tees</div><div class="rdesc">Vintage wash, oversized — 2-3 to rotate</div><div class="rproduct">Budget: H&M $15 · Mid: Uniqlo $25 · High: FOG $80</div></div></div>
+      <div class="rstep"><div class="rnum">2</div><div><div class="rname">Baggy denim</div><div class="rdesc">Straight leg or wide — most important piece</div><div class="rproduct">Budget: Dickies $35 · Mid: Levi's 550 $60</div></div></div>
+      <div class="rstep"><div class="rnum">3</div><div><div class="rname">Heavyweight hoodie</div><div class="rdesc">One quality piece — wears for years</div><div class="rproduct">Budget: H&M $30 · Mid: Champion $55 · High: Essential $120</div></div></div>
+      <div class="rstep"><div class="rnum">4</div><div><div class="rname">Sneakers</div><div class="rdesc">Makes or breaks every fit</div><div class="rproduct">Jordan 1 Low · Nike Dunk · NB 550 — $90-$130</div></div></div>
+    </div>
+    <div class="slbl">$300 starter budget</div>
+    <div class="budget-section">
+      <div class="budget-hdr"><div style="font-size:14px;font-weight:700;color:var(--text)">Complete streetwear wardrobe</div></div>
+      <div class="budget-item"><span class="budget-name">2 graphic tees</span><span class="budget-price">$40</span></div>
+      <div class="budget-item"><span class="budget-name">Baggy denim</span><span class="budget-price">$60</span></div>
+      <div class="budget-item"><span class="budget-name">Heavyweight hoodie</span><span class="budget-price">$55</span></div>
+      <div class="budget-item"><span class="budget-name">Sneakers</span><span class="budget-price">$110</span></div>
+      <div class="budget-item" style="background:var(--blue-light)"><span class="budget-name" style="font-weight:700">Total</span><span class="budget-price">$265</span></div>
+    </div>
+    <button class="bdark" onclick="go('style-chat')">Ask your stylist →</button>
+  </div>
+</div>
+
+<!-- MINIMAL STYLE -->
+<div id="minimal" class="screen">
+  <div class="scroll">
+    <div class="status" style="padding-bottom:4px"><button class="bbtn" onclick="go('style')"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>Style</button></div>
+    <div class="chdr"><div class="chdr-emoji">⬜</div><div class="chdr-title">Clean & Minimal</div><div class="chdr-sub">Less is more. Quality over quantity.</div></div>
+    <div class="slbl">Essential pieces</div>
+    <div class="routine-section">
+      <div class="routine-hdr"><div class="routine-hdr-title">The minimal wardrobe that always works</div></div>
+      <div class="rstep"><div class="rnum">1</div><div><div class="rname">White heavyweight tee</div><div class="rdesc">Most important piece in a minimal wardrobe</div><div class="rproduct">Uniqlo Supima Cotton $15 · ASKET $45</div></div></div>
+      <div class="rstep"><div class="rnum">2</div><div><div class="rname">Dark straight leg chinos</div><div class="rdesc">Navy, black, or charcoal — pairs with everything</div><div class="rproduct">Uniqlo slim fit $40 · COS $90</div></div></div>
+      <div class="rstep"><div class="rnum">3</div><div><div class="rname">Clean white sneaker</div><div class="rdesc">Foundation of every clean outfit</div><div class="rproduct">Nike AF1 $90 · Adidas Stan Smith $80</div></div></div>
+      <div class="rstep"><div class="rnum">4</div><div><div class="rname">Simple crewneck</div><div class="rdesc">Grey or navy — layering piece for any season</div><div class="rproduct">Uniqlo $30 · COS $70</div></div></div>
+    </div>
+    <div class="slbl">$200 starter budget</div>
+    <div class="budget-section">
+      <div class="budget-hdr"><div style="font-size:14px;font-weight:700;color:var(--text)">Complete minimal wardrobe</div></div>
+      <div class="budget-item"><span class="budget-name">3 quality tees</span><span class="budget-price">$45</span></div>
+      <div class="budget-item"><span class="budget-name">Dark chinos</span><span class="budget-price">$40</span></div>
+      <div class="budget-item"><span class="budget-name">Clean sneaker</span><span class="budget-price">$85</span></div>
+      <div class="budget-item"><span class="budget-name">Crewneck</span><span class="budget-price">$30</span></div>
+      <div class="budget-item" style="background:var(--blue-light)"><span class="budget-name" style="font-weight:700">Total</span><span class="budget-price">$200</span></div>
+    </div>
+    <button class="bdark" onclick="go('style-chat')">Ask your stylist →</button>
+  </div>
+</div>
+
+<!-- LUXURY STYLE -->
+<div id="luxury-style" class="screen">
+  <div class="scroll">
+    <div class="status" style="padding-bottom:4px"><button class="bbtn" onclick="go('style')"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>Style</button></div>
+    <div class="chdr"><div class="chdr-emoji">💎</div><div class="chdr-title">Luxury</div><div class="chdr-sub">Investment pieces. Worn for decades.</div></div>
+    <div class="slbl">Brand tiers</div>
+    <div class="sitem"><div class="sico">🏷️</div><div><div class="sname">Entry luxury</div><div class="sdesc">Burberry, Hugo Boss — $200-$500 per piece</div></div></div>
+    <div class="sitem"><div class="sico">🏷️</div><div><div class="sname">Mid luxury</div><div class="sdesc">Gucci, Prada, Bottega — $400-$1,500</div></div></div>
+    <div class="sitem"><div class="sico">🏷️</div><div><div class="sname">High luxury</div><div class="sdesc">Louis Vuitton, Dior — $800-$5,000</div></div></div>
+    <div class="slbl">The rules</div>
+    <div class="card">
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <div style="font-size:13px;color:var(--text);line-height:1.5">One logo piece max per outfit — never stack logos</div>
+        <div style="font-size:13px;color:var(--text);line-height:1.5">Mix luxury with basics — looks more intentional</div>
+        <div style="font-size:13px;color:var(--text);line-height:1.5">Fit still matters even in designer — tailor if needed</div>
+        <div style="font-size:13px;color:var(--text);line-height:1.5">Confidence carries luxury more than money does</div>
+      </div>
+    </div>
+    <button class="bdark" onclick="go('style-chat')">Ask your stylist →</button>
+  </div>
+</div>
+
+<!-- BUDGET STYLE -->
+<div id="budget-style" class="screen">
+  <div class="scroll">
+    <div class="status" style="padding-bottom:4px"><button class="bbtn" onclick="go('style')"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>Style</button></div>
+    <div class="chdr"><div class="chdr-emoji">💸</div><div class="chdr-title">Budget Upgrade</div><div class="chdr-sub">Look expensive on $200 or less</div></div>
+    <div class="slbl">The cheat codes</div>
+    <div class="card">
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div style="font-size:13px;font-weight:700;color:var(--text)">Thrifting</div>
+        <div style="font-size:13px;color:var(--muted);line-height:1.5">Designer pieces for $5-$20. Shop weekly. The single biggest cheat code.</div>
+        <div style="font-size:13px;font-weight:700;color:var(--text);margin-top:4px">Fit over brand</div>
+        <div style="font-size:13px;color:var(--muted);line-height:1.5">A well-fitted $15 tee beats a baggy $100 one. Tailoring costs $10-$20.</div>
+        <div style="font-size:13px;font-weight:700;color:var(--text);margin-top:4px">Washing and ironing</div>
+        <div style="font-size:13px;color:var(--muted);line-height:1.5">Free. Makes any outfit look 10x better. Most people skip this.</div>
+      </div>
+    </div>
+    <div class="slbl">$200 complete wardrobe</div>
+    <div class="budget-section">
+      <div class="budget-hdr"><div style="font-size:14px;font-weight:700;color:var(--text)">Looks expensive. Costs $200.</div></div>
+      <div class="budget-item"><span class="budget-name">3 tees (Uniqlo)</span><span class="budget-price">$30</span></div>
+      <div class="budget-item"><span class="budget-name">Hoodie (H&M)</span><span class="budget-price">$25</span></div>
+      <div class="budget-item"><span class="budget-name">Dark denim (Levi's sale)</span><span class="budget-price">$40</span></div>
+      <div class="budget-item"><span class="budget-name">Clean sneaker (Nike sale)</span><span class="budget-price">$70</span></div>
+      <div class="budget-item"><span class="budget-name">Thrift statement piece</span><span class="budget-price">$15</span></div>
+      <div class="budget-item" style="background:var(--blue-light)"><span class="budget-name" style="font-weight:700">Total</span><span class="budget-price">$180</span></div>
+    </div>
+    <button class="bdark" onclick="go('style-chat')">Ask your stylist →</button>
+  </div>
+</div>
+
+<!-- DISCIPLINE -->
+<div id="discipline" class="screen">
+  <div class="scroll">
+    <div class="status" style="padding-bottom:4px"><button class="bbtn" onclick="go('mind')"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>Mind</button></div>
+    <div class="chdr"><div class="chdr-emoji">🎯</div><div class="chdr-title">Discipline & Habits</div><div class="chdr-sub">Systems beat willpower every time</div></div>
+    <div class="goal-card"><div class="goal-title">Goal</div><div class="goal-val">3 core habits</div><div class="goal-sub">Day 12 of 66 · Non-negotiable daily</div><div class="pbar"><div class="pfill" style="width:18%"></div></div></div>
+    <div class="slbl">Today's lesson</div>
+    <div class="lesson"><div class="lesson-tag">Day 12 · Discipline</div><div class="lesson-body"><div class="lesson-title">Why willpower is a lie — and what actually works</div><div class="lesson-preview">Every person who told you to "just be more disciplined" was wrong. Discipline isn't a trait you're born with. It's a system you build...</div><div class="lesson-meta"><span>3 min</span><span>·</span><span>1 action today</span></div></div></div>
+    <div class="slbl">Your 3 non-negotiables</div>
+    <div class="routine-section">
+      <div class="routine-hdr"><div class="routine-hdr-title">Do these every day — no exceptions</div></div>
+      <div class="rstep"><div class="rnum">1</div><div><div class="rname">Phone out of reach for first 30 min</div><div class="rdesc">The most important habit — protects your morning mind</div></div></div>
+      <div class="rstep"><div class="rnum">2</div><div><div class="rname">Write your one priority the night before</div><div class="rdesc">One task. Most important. Do it first thing.</div></div></div>
+      <div class="rstep"><div class="rnum">3</div><div><div class="rname">90 minute focus blocks</div><div class="rdesc">Work session, phone away, one task only. 15 min break after.</div></div></div>
+    </div>
+    <button class="bdark" onclick="go('mind-chat')">Ask your mind coach →</button>
+  </div>
+</div>
+
+<!-- FOCUS -->
+<div id="focus" class="screen">
+  <div class="scroll">
+    <div class="status" style="padding-bottom:4px"><button class="bbtn" onclick="go('mind')"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>Mind</button></div>
+    <div class="chdr"><div class="chdr-emoji">🧘</div><div class="chdr-title">Focus & Deep Work</div><div class="chdr-sub">Do less. But do it completely.</div></div>
+    <div class="slbl">The deep work system</div>
+    <div class="routine-section">
+      <div class="routine-hdr"><div class="routine-hdr-title">How to actually focus in 2026</div></div>
+      <div class="rstep"><div class="rnum">1</div><div><div class="rname">Phone in another room</div><div class="rdesc">Not face down. Not silent. Another room. Non-negotiable.</div></div></div>
+      <div class="rstep"><div class="rnum">2</div><div><div class="rname">One task only</div><div class="rdesc">Write it down before you start. One. Not three.</div></div></div>
+      <div class="rstep"><div class="rnum">3</div><div><div class="rname">90 minute blocks</div><div class="rdesc">Work 90 min, break 15 min — matches your brain's rhythm.</div></div></div>
+    </div>
+    <button class="bdark" onclick="go('mind-chat')">Ask your mind coach →</button>
+  </div>
+</div>
+
+<!-- MORNING ROUTINE -->
+<div id="morning" class="screen">
+  <div class="scroll">
+    <div class="status" style="padding-bottom:4px"><button class="bbtn" onclick="go('mind')"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>Mind</button></div>
+    <div class="chdr"><div class="chdr-emoji">🌅</div><div class="chdr-title">Morning Routine</div><div class="chdr-sub">Win the morning. Win the day.</div></div>
+    <div class="goal-card"><div class="goal-title">Streak</div><div class="goal-val">12 days</div><div class="goal-sub">Consistent morning routine</div><div class="pbar"><div class="pfill" style="width:40%"></div></div></div>
+    <div class="slbl">Your routine — 45 min</div>
+    <div class="routine-section">
+      <div class="routine-hdr"><div class="routine-hdr-title">Every morning — no phone until this is done</div></div>
+      <div class="rstep"><div class="rnum">1</div><div><div class="rname">No snooze</div><div class="rdesc">The moment you snooze you've lost the first battle of the day</div></div></div>
+      <div class="rstep"><div class="rnum">2</div><div><div class="rname">16oz water immediately</div><div class="rdesc">Rehydrate before anything — your brain needs it</div></div></div>
+      <div class="rstep"><div class="rnum">3</div><div><div class="rname">Move your body 10-20 min</div><div class="rdesc">Walk, workout, stretch — activates mind and body</div></div></div>
+      <div class="rstep"><div class="rnum">4</div><div><div class="rname">Skincare routine 3 min</div><div class="rdesc">Cleanser, serum, moisturizer, SPF</div></div></div>
+      <div class="rstep"><div class="rnum">5</div><div><div class="rname">Write your one priority</div><div class="rdesc">One task. Most important thing today. Do it first.</div></div></div>
+      <div class="rstep"><div class="rnum">6</div><div><div class="rname">Eat breakfast</div><div class="rdesc">Hit 40g+ protein to start the day right</div></div></div>
+    </div>
+    <button class="bdark" onclick="go('mind-chat')">Ask your mind coach →</button>
+  </div>
+</div>
+
+<!-- COMMUNICATION -->
+<div id="communication" class="screen">
+  <div class="scroll">
+    <div class="status" style="padding-bottom:4px"><button class="bbtn" onclick="go('confidence')"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>Confidence</button></div>
+    <div class="chdr"><div class="chdr-emoji">🗣️</div><div class="chdr-title">Communication</div><div class="chdr-sub">The most valuable skill nobody teaches</div></div>
+    <div class="slbl">Today's lesson</div>
+    <div class="lesson"><div class="lesson-tag">Day 7 · Communication</div><div class="lesson-body"><div class="lesson-title">The one shift that makes you magnetic in any room</div><div class="lesson-preview">Most people are thinking about themselves when they talk to someone. The ones who are naturally magnetic do the exact opposite...</div><div class="lesson-meta"><span>3 min</span><span>·</span><span>1 action today</span></div></div></div>
+    <div class="slbl">The framework</div>
+    <div class="routine-section">
+      <div class="routine-hdr"><div class="routine-hdr-title">How great communicators operate</div></div>
+      <div class="rstep"><div class="rnum">1</div><div><div class="rname">Ask genuine questions</div><div class="rdesc">People love talking about themselves. Ask and actually listen.</div></div></div>
+      <div class="rstep"><div class="rnum">2</div><div><div class="rname">Listen more than you speak</div><div class="rdesc">The quietest person in the room is often the most powerful.</div></div></div>
+      <div class="rstep"><div class="rnum">3</div><div><div class="rname">Pause before responding</div><div class="rdesc">2 seconds after they finish — shows you actually listened.</div></div></div>
+      <div class="rstep"><div class="rnum">4</div><div><div class="rname">Speak with intent</div><div class="rdesc">Say less but mean more. Specific talkers own rooms.</div></div></div>
+    </div>
+    <div class="slbl">Today's challenge</div>
+    <div class="card" style="border-color:var(--blue);background:var(--blue-light)">
+      <div style="font-size:13px;font-weight:700;color:var(--blue);margin-bottom:6px">Day 7 mission</div>
+      <div style="font-size:13px;color:var(--text);line-height:1.6">Start one conversation with someone you don't know well. Ask one genuine question and actually listen. That's it.</div>
+    </div>
+    <button class="bdark" onclick="go('conf-chat')">Ask your confidence coach →</button>
+  </div>
+</div>
+
+<!-- DATING -->
+<div id="dating" class="screen">
+  <div class="scroll">
+    <div class="status" style="padding-bottom:4px"><button class="bbtn" onclick="go('confidence')"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>Confidence</button></div>
+    <div class="chdr"><div class="chdr-emoji">❤️</div><div class="chdr-title">Dating</div><div class="chdr-sub">Attraction is a skill. Skills are learned.</div></div>
+    <div class="slbl">Today's lesson</div>
+    <div class="lesson"><div class="lesson-tag">Day 3 · Dating</div><div class="lesson-body"><div class="lesson-title">Why trying to impress people repels them</div><div class="lesson-preview">The harder you try to impress someone the less attractive you become. Here's the counterintuitive truth about what actually creates attraction...</div><div class="lesson-meta"><span>3 min</span><span>·</span><span>1 action today</span></div></div></div>
+    <div class="slbl">What actually works</div>
+    <div class="routine-section">
+      <div class="routine-hdr"><div class="routine-hdr-title">The fundamentals</div></div>
+      <div class="rstep"><div class="rnum">1</div><div><div class="rname">Work on yourself first</div><div class="rdesc">Body, image, style, confidence — attraction follows naturally</div></div></div>
+      <div class="rstep"><div class="rnum">2</div><div><div class="rname">Be genuinely curious</div><div class="rdesc">Ask questions. Listen. Be interested not interesting.</div></div></div>
+      <div class="rstep"><div class="rnum">3</div><div><div class="rname">Have a life worth talking about</div><div class="rdesc">Goals, skills, passions — people are attracted to direction</div></div></div>
+      <div class="rstep"><div class="rnum">4</div><div><div class="rname">Don't need their approval</div><div class="rdesc">Neediness kills attraction. Build your own life first.</div></div></div>
+    </div>
+    <button class="bdark" onclick="go('conf-chat')">Ask your confidence coach →</button>
+  </div>
+</div>
+
+<!-- NETWORKING -->
+<div id="networking" class="screen">
+  <div class="scroll">
+    <div class="status" style="padding-bottom:4px"><button class="bbtn" onclick="go('confidence')"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>Confidence</button></div>
+    <div class="chdr"><div class="chdr-emoji">🤝</div><div class="chdr-title">Networking</div><div class="chdr-sub">Your network is your net worth</div></div>
+    <div class="slbl">Today's lesson</div>
+    <div class="lesson"><div class="lesson-tag">Day 2 · Networking</div><div class="lesson-body"><div class="lesson-title">How to get in rooms most people never enter</div><div class="lesson-preview">The most successful people aren't the smartest — they know the right people. Here's exactly how to build those relationships from zero...</div><div class="lesson-meta"><span>4 min</span><span>·</span><span>1 action today</span></div></div></div>
+    <div class="slbl">The framework</div>
+    <div class="routine-section">
+      <div class="routine-hdr"><div class="routine-hdr-title">How to build real connections</div></div>
+      <div class="rstep"><div class="rnum">1</div><div><div class="rname">Give before you ask</div><div class="rdesc">Add value first — share something useful, help without expecting anything</div></div></div>
+      <div class="rstep"><div class="rnum">2</div><div><div class="rname">Follow up specifically</div><div class="rdesc">Reference something specific from your conversation — generic = forgotten</div></div></div>
+      <div class="rstep"><div class="rnum">3</div><div><div class="rname">Show up consistently</div><div class="rdesc">Same events, same communities. Familiarity builds trust.</div></div></div>
+    </div>
+    <button class="bdark" onclick="go('conf-chat')">Ask your confidence coach →</button>
+  </div>
+</div>
+
+<!-- BODY LANGUAGE -->
+<div id="body-language" class="screen">
+  <div class="scroll">
+    <div class="status" style="padding-bottom:4px"><button class="bbtn" onclick="go('confidence')"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>Confidence</button></div>
+    <div class="chdr"><div class="chdr-emoji">🧍</div><div class="chdr-title">Body Language</div><div class="chdr-sub">93% of communication is non-verbal</div></div>
+    <div class="slbl">Build into every interaction</div>
+    <div class="routine-section">
+      <div class="routine-hdr"><div class="routine-hdr-title">Daily habits</div></div>
+      <div class="rstep"><div class="rnum">1</div><div><div class="rname">Eye contact</div><div class="rdesc">Hold 2 seconds longer than feels comfortable. Look away naturally.</div></div></div>
+      <div class="rstep"><div class="rnum">2</div><div><div class="rname">Posture</div><div class="rdesc">Shoulders back, chest open, chin parallel. 2 weeks to make automatic.</div></div></div>
+      <div class="rstep"><div class="rnum">3</div><div><div class="rname">Slow down</div><div class="rdesc">Walk slower. Talk slower. Move with intention not anxiety.</div></div></div>
+      <div class="rstep"><div class="rnum">4</div><div><div class="rname">Take up space</div><div class="rdesc">Don't shrink. Confident people occupy space naturally.</div></div></div>
+    </div>
+    <button class="bdark" onclick="go('conf-chat')">Ask your confidence coach →</button>
+  </div>
+</div>
+
+<!-- BOUNDARIES -->
+<div id="boundaries" class="screen">
+  <div class="scroll">
+    <div class="status" style="padding-bottom:4px"><button class="bbtn" onclick="go('confidence')"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>Confidence</button></div>
+    <div class="chdr"><div class="chdr-emoji">🚫</div><div class="chdr-title">Boundaries</div><div class="chdr-sub">Respect yourself or no one else will</div></div>
+    <div class="slbl">Today's lesson</div>
+    <div class="lesson"><div class="lesson-tag">Day 1 · Boundaries</div><div class="lesson-body"><div class="lesson-title">Why saying no is the most powerful word you can learn</div><div class="lesson-preview">Every time you say yes when you mean no you lose a piece of yourself. Here's how to say no without explanation...</div><div class="lesson-meta"><span>3 min</span><span>·</span><span>1 action today</span></div></div></div>
+    <div class="slbl">The framework</div>
+    <div class="routine-section">
+      <div class="routine-hdr"><div class="routine-hdr-title">Setting real boundaries</div></div>
+      <div class="rstep"><div class="rnum">1</div><div><div class="rname">Say no without apologizing</div><div class="rdesc">"No" is a complete sentence. You owe no one an explanation.</div></div></div>
+      <div class="rstep"><div class="rnum">2</div><div><div class="rname">Identify your non-negotiables</div><div class="rdesc">What will you not tolerate? Write them down. They become your standard.</div></div></div>
+      <div class="rstep"><div class="rnum">3</div><div><div class="rname">Cut without drama</div><div class="rdesc">Toxic people don't deserve an explanation. Just distance.</div></div></div>
+    </div>
+    <button class="bdark" onclick="go('conf-chat')">Ask your confidence coach →</button>
+  </div>
+</div>
+
+<!-- REJECTION -->
+<div id="rejection" class="screen">
+  <div class="scroll">
+    <div class="status" style="padding-bottom:4px"><button class="bbtn" onclick="go('confidence')"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>Confidence</button></div>
+    <div class="chdr"><div class="chdr-emoji">😤</div><div class="chdr-title">Handle Rejection</div><div class="chdr-sub">Every no is building you</div></div>
+    <div class="card"><div style="font-size:13px;color:var(--text);line-height:1.7">Rejection means you tried. The people who never get rejected never try. Every person you admire has been rejected more times than you've even attempted.</div></div>
+    <div class="slbl">30 day rejection challenge</div>
+    <div class="routine-section">
+      <div class="routine-hdr"><div class="routine-hdr-title">Get rejected once a day for 30 days</div></div>
+      <div class="rstep"><div class="rnum">W1</div><div><div class="rname">Ask for a discount somewhere</div><div class="rdesc">Coffee shop, store, anywhere. Most say no. That's it. You're fine.</div></div></div>
+      <div class="rstep"><div class="rnum">W2</div><div><div class="rname">Start a conversation with a stranger</div><div class="rdesc">Worst case they're not interested. You're still alive.</div></div></div>
+      <div class="rstep"><div class="rnum">W3</div><div><div class="rname">Ask for something you normally wouldn't</div><div class="rdesc">An opportunity, a favor. The answer might surprise you.</div></div></div>
+      <div class="rstep"><div class="rnum">W4</div><div><div class="rname">Notice how little rejection actually hurts</div><div class="rdesc">You've been scared of nothing. That realization changes everything.</div></div></div>
+    </div>
+    <button class="bdark" onclick="go('conf-chat')">Ask your confidence coach →</button>
+  </div>
+</div>
+
+</div>
+<script>
+function go(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active')}
+function send(m,i,e){if(e.key==='Enter')sendBtn(m,i)}
+function sendBtn(m,i){
+  const inp=document.getElementById(i),msgs=document.getElementById(m),txt=inp.value.trim();
+  if(!txt)return;
+  const u=document.createElement('div');u.className='msg user';u.textContent=txt;msgs.appendChild(u);inp.value='';msgs.scrollTop=msgs.scrollHeight;
+  setTimeout(()=>{const b=document.createElement('div');b.className='msg bot';b.textContent='Good. Keep that energy. The answer becomes clear through action not thinking. What is your next move today?';msgs.appendChild(b);msgs.scrollTop=msgs.scrollHeight},900);
+}
+</script>
+</body>
+</html>
